@@ -1,0 +1,16 @@
+{
+  "schema": "mwgym.world-lock.v1",
+  "world": "ygo",
+  "version": "MOLTWORK-YGO-v1",
+  "ygo_agent_commit": "dbf5142d49aab2e6beb4150788d4fffec39ae3e5",
+  "ygo_agent_repo": "https://github.com/sbl1996/ygo-agent",
+  "card_database_sha256": "pending",
+  "script_tree_sha256": "pending",
+  "banlist_sha256": "pending",
+  "deck_pack_sha256": "pending",
+  "opponent_pack_sha256": "pending",
+  "adapter_sha256": "pending",
+  "base_policy_sha256": "pending",
+  "frozen_at": "2026-08-31T11:59:05Z",
+  "frozen_by": "mwgym-agent"
+}
