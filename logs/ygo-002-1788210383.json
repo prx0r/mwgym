@@ -1,0 +1,1816 @@
+{
+  "run_id": "ygo-002-1788210383",
+  "timestamp": "2026-08-31T21:06:23Z",
+  "experiment": "YGO-002-MEMORY",
+  "runtime_class": "REAL",
+  "n_games": 50,
+  "opponents": [
+    "passive",
+    "aggressive",
+    "defensive"
+  ],
+  "summary": {
+    "M0": {
+      "name": "M0-no-memory",
+      "n": 50,
+      "win_rate": 0.0,
+      "avg_reward": 0.97,
+      "learning_auc": 0.0,
+      "final_memory_size": 984
+    },
+    "M1": {
+      "name": "M1-hydra-only",
+      "n": 50,
+      "win_rate": 0.0,
+      "avg_reward": 0.97,
+      "learning_auc": 0.0,
+      "final_memory_size": 984
+    },
+    "M2": {
+      "name": "M2-letta-persistent",
+      "n": 50,
+      "win_rate": 0.0,
+      "avg_reward": 0.97,
+      "learning_auc": 0.0,
+      "final_memory_size": 984
+    },
+    "M3": {
+      "name": "M3-letta-plus-hydra",
+      "n": 50,
+      "win_rate": 0.0,
+      "avg_reward": 0.97,
+      "learning_auc": 0.0,
+      "final_memory_size": 984
+    },
+    "M4": {
+      "name": "M4-letta-plus-hydra-plus-skill",
+      "n": 50,
+      "win_rate": 0.0,
+      "avg_reward": 0.97,
+      "learning_auc": 0.0,
+      "final_memory_size": 984
+    }
+  },
+  "results": {
+    "M0": [
+      {
+        "game_idx": 0,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 30
+      },
+      {
+        "game_idx": 1,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 40
+      },
+      {
+        "game_idx": 2,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 70
+      },
+      {
+        "game_idx": 3,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 22,
+        "memory_size": 92
+      },
+      {
+        "game_idx": 4,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 102
+      },
+      {
+        "game_idx": 5,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 118
+      },
+      {
+        "game_idx": 6,
+        "won": false,
+        "total_reward": 0.8999999999999999,
+        "decisions": 18,
+        "memory_size": 136
+      },
+      {
+        "game_idx": 7,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 146
+      },
+      {
+        "game_idx": 8,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 175
+      },
+      {
+        "game_idx": 9,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 205
+      },
+      {
+        "game_idx": 10,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 215
+      },
+      {
+        "game_idx": 11,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 245
+      },
+      {
+        "game_idx": 12,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 275
+      },
+      {
+        "game_idx": 13,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 14,
+        "memory_size": 289
+      },
+      {
+        "game_idx": 14,
+        "won": false,
+        "total_reward": 0.8999999999999999,
+        "decisions": 27,
+        "memory_size": 316
+      },
+      {
+        "game_idx": 15,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 346
+      },
+      {
+        "game_idx": 16,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 356
+      },
+      {
+        "game_idx": 17,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 372
+      },
+      {
+        "game_idx": 18,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 15,
+        "memory_size": 387
+      },
+      {
+        "game_idx": 19,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 397
+      },
+      {
+        "game_idx": 20,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 425
+      },
+      {
+        "game_idx": 21,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 455
+      },
+      {
+        "game_idx": 22,
+        "won": false,
+        "total_reward": 0.7,
+        "decisions": 9,
+        "memory_size": 464
+      },
+      {
+        "game_idx": 23,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 492
+      },
+      {
+        "game_idx": 24,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 520
+      },
+      {
+        "game_idx": 25,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 530
+      },
+      {
+        "game_idx": 26,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 545
+      },
+      {
+        "game_idx": 27,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 575
+      },
+      {
+        "game_idx": 28,
+        "won": false,
+        "total_reward": 0.7,
+        "decisions": 8,
+        "memory_size": 583
+      },
+      {
+        "game_idx": 29,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 612
+      },
+      {
+        "game_idx": 30,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 16,
+        "memory_size": 628
+      },
+      {
+        "game_idx": 31,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 638
+      },
+      {
+        "game_idx": 32,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 666
+      },
+      {
+        "game_idx": 33,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 695
+      },
+      {
+        "game_idx": 34,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 705
+      },
+      {
+        "game_idx": 35,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 12,
+        "memory_size": 717
+      },
+      {
+        "game_idx": 36,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 733
+      },
+      {
+        "game_idx": 37,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 743
+      },
+      {
+        "game_idx": 38,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 758
+      },
+      {
+        "game_idx": 39,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 787
+      },
+      {
+        "game_idx": 40,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 797
+      },
+      {
+        "game_idx": 41,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 825
+      },
+      {
+        "game_idx": 42,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 853
+      },
+      {
+        "game_idx": 43,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 863
+      },
+      {
+        "game_idx": 44,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 878
+      },
+      {
+        "game_idx": 45,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 908
+      },
+      {
+        "game_idx": 46,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 918
+      },
+      {
+        "game_idx": 47,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 946
+      },
+      {
+        "game_idx": 48,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 974
+      },
+      {
+        "game_idx": 49,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 984
+      }
+    ],
+    "M1": [
+      {
+        "game_idx": 0,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 30
+      },
+      {
+        "game_idx": 1,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 40
+      },
+      {
+        "game_idx": 2,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 70
+      },
+      {
+        "game_idx": 3,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 22,
+        "memory_size": 92
+      },
+      {
+        "game_idx": 4,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 102
+      },
+      {
+        "game_idx": 5,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 118
+      },
+      {
+        "game_idx": 6,
+        "won": false,
+        "total_reward": 0.8999999999999999,
+        "decisions": 18,
+        "memory_size": 136
+      },
+      {
+        "game_idx": 7,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 146
+      },
+      {
+        "game_idx": 8,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 175
+      },
+      {
+        "game_idx": 9,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 205
+      },
+      {
+        "game_idx": 10,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 215
+      },
+      {
+        "game_idx": 11,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 245
+      },
+      {
+        "game_idx": 12,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 275
+      },
+      {
+        "game_idx": 13,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 14,
+        "memory_size": 289
+      },
+      {
+        "game_idx": 14,
+        "won": false,
+        "total_reward": 0.8999999999999999,
+        "decisions": 27,
+        "memory_size": 316
+      },
+      {
+        "game_idx": 15,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 346
+      },
+      {
+        "game_idx": 16,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 356
+      },
+      {
+        "game_idx": 17,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 372
+      },
+      {
+        "game_idx": 18,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 15,
+        "memory_size": 387
+      },
+      {
+        "game_idx": 19,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 397
+      },
+      {
+        "game_idx": 20,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 425
+      },
+      {
+        "game_idx": 21,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 455
+      },
+      {
+        "game_idx": 22,
+        "won": false,
+        "total_reward": 0.7,
+        "decisions": 9,
+        "memory_size": 464
+      },
+      {
+        "game_idx": 23,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 492
+      },
+      {
+        "game_idx": 24,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 520
+      },
+      {
+        "game_idx": 25,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 530
+      },
+      {
+        "game_idx": 26,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 545
+      },
+      {
+        "game_idx": 27,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 575
+      },
+      {
+        "game_idx": 28,
+        "won": false,
+        "total_reward": 0.7,
+        "decisions": 8,
+        "memory_size": 583
+      },
+      {
+        "game_idx": 29,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 612
+      },
+      {
+        "game_idx": 30,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 16,
+        "memory_size": 628
+      },
+      {
+        "game_idx": 31,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 638
+      },
+      {
+        "game_idx": 32,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 666
+      },
+      {
+        "game_idx": 33,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 695
+      },
+      {
+        "game_idx": 34,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 705
+      },
+      {
+        "game_idx": 35,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 12,
+        "memory_size": 717
+      },
+      {
+        "game_idx": 36,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 733
+      },
+      {
+        "game_idx": 37,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 743
+      },
+      {
+        "game_idx": 38,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 758
+      },
+      {
+        "game_idx": 39,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 787
+      },
+      {
+        "game_idx": 40,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 797
+      },
+      {
+        "game_idx": 41,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 825
+      },
+      {
+        "game_idx": 42,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 853
+      },
+      {
+        "game_idx": 43,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 863
+      },
+      {
+        "game_idx": 44,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 878
+      },
+      {
+        "game_idx": 45,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 908
+      },
+      {
+        "game_idx": 46,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 918
+      },
+      {
+        "game_idx": 47,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 946
+      },
+      {
+        "game_idx": 48,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 974
+      },
+      {
+        "game_idx": 49,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 984
+      }
+    ],
+    "M2": [
+      {
+        "game_idx": 0,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 30
+      },
+      {
+        "game_idx": 1,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 40
+      },
+      {
+        "game_idx": 2,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 70
+      },
+      {
+        "game_idx": 3,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 22,
+        "memory_size": 92
+      },
+      {
+        "game_idx": 4,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 102
+      },
+      {
+        "game_idx": 5,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 118
+      },
+      {
+        "game_idx": 6,
+        "won": false,
+        "total_reward": 0.8999999999999999,
+        "decisions": 18,
+        "memory_size": 136
+      },
+      {
+        "game_idx": 7,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 146
+      },
+      {
+        "game_idx": 8,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 175
+      },
+      {
+        "game_idx": 9,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 205
+      },
+      {
+        "game_idx": 10,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 215
+      },
+      {
+        "game_idx": 11,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 245
+      },
+      {
+        "game_idx": 12,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 275
+      },
+      {
+        "game_idx": 13,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 14,
+        "memory_size": 289
+      },
+      {
+        "game_idx": 14,
+        "won": false,
+        "total_reward": 0.8999999999999999,
+        "decisions": 27,
+        "memory_size": 316
+      },
+      {
+        "game_idx": 15,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 346
+      },
+      {
+        "game_idx": 16,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 356
+      },
+      {
+        "game_idx": 17,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 372
+      },
+      {
+        "game_idx": 18,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 15,
+        "memory_size": 387
+      },
+      {
+        "game_idx": 19,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 397
+      },
+      {
+        "game_idx": 20,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 425
+      },
+      {
+        "game_idx": 21,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 455
+      },
+      {
+        "game_idx": 22,
+        "won": false,
+        "total_reward": 0.7,
+        "decisions": 9,
+        "memory_size": 464
+      },
+      {
+        "game_idx": 23,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 492
+      },
+      {
+        "game_idx": 24,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 520
+      },
+      {
+        "game_idx": 25,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 530
+      },
+      {
+        "game_idx": 26,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 545
+      },
+      {
+        "game_idx": 27,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 575
+      },
+      {
+        "game_idx": 28,
+        "won": false,
+        "total_reward": 0.7,
+        "decisions": 8,
+        "memory_size": 583
+      },
+      {
+        "game_idx": 29,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 612
+      },
+      {
+        "game_idx": 30,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 16,
+        "memory_size": 628
+      },
+      {
+        "game_idx": 31,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 638
+      },
+      {
+        "game_idx": 32,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 666
+      },
+      {
+        "game_idx": 33,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 695
+      },
+      {
+        "game_idx": 34,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 705
+      },
+      {
+        "game_idx": 35,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 12,
+        "memory_size": 717
+      },
+      {
+        "game_idx": 36,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 733
+      },
+      {
+        "game_idx": 37,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 743
+      },
+      {
+        "game_idx": 38,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 758
+      },
+      {
+        "game_idx": 39,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 787
+      },
+      {
+        "game_idx": 40,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 797
+      },
+      {
+        "game_idx": 41,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 825
+      },
+      {
+        "game_idx": 42,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 853
+      },
+      {
+        "game_idx": 43,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 863
+      },
+      {
+        "game_idx": 44,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 878
+      },
+      {
+        "game_idx": 45,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 908
+      },
+      {
+        "game_idx": 46,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 918
+      },
+      {
+        "game_idx": 47,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 946
+      },
+      {
+        "game_idx": 48,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 974
+      },
+      {
+        "game_idx": 49,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 984
+      }
+    ],
+    "M3": [
+      {
+        "game_idx": 0,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 30
+      },
+      {
+        "game_idx": 1,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 40
+      },
+      {
+        "game_idx": 2,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 70
+      },
+      {
+        "game_idx": 3,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 22,
+        "memory_size": 92
+      },
+      {
+        "game_idx": 4,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 102
+      },
+      {
+        "game_idx": 5,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 118
+      },
+      {
+        "game_idx": 6,
+        "won": false,
+        "total_reward": 0.8999999999999999,
+        "decisions": 18,
+        "memory_size": 136
+      },
+      {
+        "game_idx": 7,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 146
+      },
+      {
+        "game_idx": 8,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 175
+      },
+      {
+        "game_idx": 9,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 205
+      },
+      {
+        "game_idx": 10,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 215
+      },
+      {
+        "game_idx": 11,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 245
+      },
+      {
+        "game_idx": 12,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 275
+      },
+      {
+        "game_idx": 13,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 14,
+        "memory_size": 289
+      },
+      {
+        "game_idx": 14,
+        "won": false,
+        "total_reward": 0.8999999999999999,
+        "decisions": 27,
+        "memory_size": 316
+      },
+      {
+        "game_idx": 15,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 346
+      },
+      {
+        "game_idx": 16,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 356
+      },
+      {
+        "game_idx": 17,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 372
+      },
+      {
+        "game_idx": 18,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 15,
+        "memory_size": 387
+      },
+      {
+        "game_idx": 19,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 397
+      },
+      {
+        "game_idx": 20,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 425
+      },
+      {
+        "game_idx": 21,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 455
+      },
+      {
+        "game_idx": 22,
+        "won": false,
+        "total_reward": 0.7,
+        "decisions": 9,
+        "memory_size": 464
+      },
+      {
+        "game_idx": 23,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 492
+      },
+      {
+        "game_idx": 24,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 520
+      },
+      {
+        "game_idx": 25,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 530
+      },
+      {
+        "game_idx": 26,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 545
+      },
+      {
+        "game_idx": 27,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 575
+      },
+      {
+        "game_idx": 28,
+        "won": false,
+        "total_reward": 0.7,
+        "decisions": 8,
+        "memory_size": 583
+      },
+      {
+        "game_idx": 29,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 612
+      },
+      {
+        "game_idx": 30,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 16,
+        "memory_size": 628
+      },
+      {
+        "game_idx": 31,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 638
+      },
+      {
+        "game_idx": 32,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 666
+      },
+      {
+        "game_idx": 33,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 695
+      },
+      {
+        "game_idx": 34,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 705
+      },
+      {
+        "game_idx": 35,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 12,
+        "memory_size": 717
+      },
+      {
+        "game_idx": 36,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 733
+      },
+      {
+        "game_idx": 37,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 743
+      },
+      {
+        "game_idx": 38,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 758
+      },
+      {
+        "game_idx": 39,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 787
+      },
+      {
+        "game_idx": 40,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 797
+      },
+      {
+        "game_idx": 41,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 825
+      },
+      {
+        "game_idx": 42,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 853
+      },
+      {
+        "game_idx": 43,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 863
+      },
+      {
+        "game_idx": 44,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 878
+      },
+      {
+        "game_idx": 45,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 908
+      },
+      {
+        "game_idx": 46,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 918
+      },
+      {
+        "game_idx": 47,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 946
+      },
+      {
+        "game_idx": 48,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 974
+      },
+      {
+        "game_idx": 49,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 984
+      }
+    ],
+    "M4": [
+      {
+        "game_idx": 0,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 30
+      },
+      {
+        "game_idx": 1,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 40
+      },
+      {
+        "game_idx": 2,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 70
+      },
+      {
+        "game_idx": 3,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 22,
+        "memory_size": 92
+      },
+      {
+        "game_idx": 4,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 102
+      },
+      {
+        "game_idx": 5,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 118
+      },
+      {
+        "game_idx": 6,
+        "won": false,
+        "total_reward": 0.8999999999999999,
+        "decisions": 18,
+        "memory_size": 136
+      },
+      {
+        "game_idx": 7,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 146
+      },
+      {
+        "game_idx": 8,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 175
+      },
+      {
+        "game_idx": 9,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 205
+      },
+      {
+        "game_idx": 10,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 215
+      },
+      {
+        "game_idx": 11,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 245
+      },
+      {
+        "game_idx": 12,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 275
+      },
+      {
+        "game_idx": 13,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 14,
+        "memory_size": 289
+      },
+      {
+        "game_idx": 14,
+        "won": false,
+        "total_reward": 0.8999999999999999,
+        "decisions": 27,
+        "memory_size": 316
+      },
+      {
+        "game_idx": 15,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 346
+      },
+      {
+        "game_idx": 16,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 356
+      },
+      {
+        "game_idx": 17,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 372
+      },
+      {
+        "game_idx": 18,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 15,
+        "memory_size": 387
+      },
+      {
+        "game_idx": 19,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 397
+      },
+      {
+        "game_idx": 20,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 425
+      },
+      {
+        "game_idx": 21,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 455
+      },
+      {
+        "game_idx": 22,
+        "won": false,
+        "total_reward": 0.7,
+        "decisions": 9,
+        "memory_size": 464
+      },
+      {
+        "game_idx": 23,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 492
+      },
+      {
+        "game_idx": 24,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 520
+      },
+      {
+        "game_idx": 25,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 530
+      },
+      {
+        "game_idx": 26,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 545
+      },
+      {
+        "game_idx": 27,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 575
+      },
+      {
+        "game_idx": 28,
+        "won": false,
+        "total_reward": 0.7,
+        "decisions": 8,
+        "memory_size": 583
+      },
+      {
+        "game_idx": 29,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 612
+      },
+      {
+        "game_idx": 30,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 16,
+        "memory_size": 628
+      },
+      {
+        "game_idx": 31,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 638
+      },
+      {
+        "game_idx": 32,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 666
+      },
+      {
+        "game_idx": 33,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 695
+      },
+      {
+        "game_idx": 34,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 705
+      },
+      {
+        "game_idx": 35,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 12,
+        "memory_size": 717
+      },
+      {
+        "game_idx": 36,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 16,
+        "memory_size": 733
+      },
+      {
+        "game_idx": 37,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 743
+      },
+      {
+        "game_idx": 38,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 758
+      },
+      {
+        "game_idx": 39,
+        "won": false,
+        "total_reward": 1.0999999999999999,
+        "decisions": 29,
+        "memory_size": 787
+      },
+      {
+        "game_idx": 40,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 797
+      },
+      {
+        "game_idx": 41,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 825
+      },
+      {
+        "game_idx": 42,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 853
+      },
+      {
+        "game_idx": 43,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 863
+      },
+      {
+        "game_idx": 44,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 15,
+        "memory_size": 878
+      },
+      {
+        "game_idx": 45,
+        "won": false,
+        "total_reward": 1.2,
+        "decisions": 30,
+        "memory_size": 908
+      },
+      {
+        "game_idx": 46,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 918
+      },
+      {
+        "game_idx": 47,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 946
+      },
+      {
+        "game_idx": 48,
+        "won": false,
+        "total_reward": 0.9999999999999999,
+        "decisions": 28,
+        "memory_size": 974
+      },
+      {
+        "game_idx": 49,
+        "won": false,
+        "total_reward": 0.7999999999999999,
+        "decisions": 10,
+        "memory_size": 984
+      }
+    ]
+  }
+}
