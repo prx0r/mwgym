@@ -1,0 +1,1035 @@
+{
+  "run_id": "ygo-001-1788180097",
+  "timestamp": "2026-08-31T12:41:37Z",
+  "experiment": "YGO-001-STACK-WIRING",
+  "runtime_class": "REAL",
+  "n_games": 100,
+  "opponents": [
+    "passive",
+    "aggressive",
+    "defensive"
+  ],
+  "win_rate": 0.0,
+  "avg_reward": 0.97,
+  "avg_credits_used": 0.0,
+  "total_credits_used": 0,
+  "telemetry": {
+    "model_calls": 0,
+    "tool_calls": 0,
+    "retrievals": 0,
+    "rollouts": 0,
+    "resource_spends": 1883,
+    "total_model_cost": 0,
+    "total_spend": 0.0
+  },
+  "budget_report": {
+    "total_budget": 1000,
+    "remaining": 1000,
+    "spent": 0,
+    "utilization": 0.0,
+    "actions_taken": 25
+  },
+  "base_policy_sha": "frozen-ygo-base-v1-00000000",
+  "results": [
+    {
+      "game_idx": 0,
+      "seed": 42,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.2,
+      "credits_used": 0,
+      "decisions": 30,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 1,
+      "seed": 43,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 2,
+      "seed": 44,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 1.2,
+      "credits_used": 0,
+      "decisions": 30,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 3,
+      "seed": 45,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 22,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 4,
+      "seed": 46,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 5,
+      "seed": 47,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 16,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 6,
+      "seed": 48,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.8999999999999999,
+      "credits_used": 0,
+      "decisions": 18,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 7,
+      "seed": 49,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 8,
+      "seed": 50,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 29,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 9,
+      "seed": 51,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.2,
+      "credits_used": 0,
+      "decisions": 30,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 10,
+      "seed": 52,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 11,
+      "seed": 53,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 1.2,
+      "credits_used": 0,
+      "decisions": 30,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 12,
+      "seed": 54,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.2,
+      "credits_used": 0,
+      "decisions": 30,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 13,
+      "seed": 55,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 14,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 14,
+      "seed": 56,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.8999999999999999,
+      "credits_used": 0,
+      "decisions": 27,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 15,
+      "seed": 57,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.2,
+      "credits_used": 0,
+      "decisions": 30,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 16,
+      "seed": 58,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 17,
+      "seed": 59,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 16,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 18,
+      "seed": 60,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 15,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 19,
+      "seed": 61,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 20,
+      "seed": 62,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 28,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 21,
+      "seed": 63,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.2,
+      "credits_used": 0,
+      "decisions": 30,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 22,
+      "seed": 64,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7,
+      "credits_used": 0,
+      "decisions": 9,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 23,
+      "seed": 65,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 28,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 24,
+      "seed": 66,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 28,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 25,
+      "seed": 67,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 26,
+      "seed": 68,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 15,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 27,
+      "seed": 69,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.2,
+      "credits_used": 0,
+      "decisions": 30,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 28,
+      "seed": 70,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7,
+      "credits_used": 0,
+      "decisions": 8,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 29,
+      "seed": 71,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 29,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 30,
+      "seed": 72,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 16,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 31,
+      "seed": 73,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 32,
+      "seed": 74,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 28,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 33,
+      "seed": 75,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 29,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 34,
+      "seed": 76,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 35,
+      "seed": 77,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 12,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 36,
+      "seed": 78,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 16,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 37,
+      "seed": 79,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 38,
+      "seed": 80,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 15,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 39,
+      "seed": 81,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 29,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 40,
+      "seed": 82,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 41,
+      "seed": 83,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 28,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 42,
+      "seed": 84,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 28,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 43,
+      "seed": 85,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 44,
+      "seed": 86,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 15,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 45,
+      "seed": 87,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.2,
+      "credits_used": 0,
+      "decisions": 30,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 46,
+      "seed": 88,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 47,
+      "seed": 89,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 28,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 48,
+      "seed": 90,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 28,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 49,
+      "seed": 91,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 50,
+      "seed": 92,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.8999999999999999,
+      "credits_used": 0,
+      "decisions": 14,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 51,
+      "seed": 93,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 29,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 52,
+      "seed": 94,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 53,
+      "seed": 95,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 29,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 54,
+      "seed": 96,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.3,
+      "credits_used": 0,
+      "decisions": 26,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 55,
+      "seed": 97,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 56,
+      "seed": 98,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 17,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 57,
+      "seed": 99,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 19,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 58,
+      "seed": 100,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 59,
+      "seed": 101,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 1.2,
+      "credits_used": 0,
+      "decisions": 30,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 60,
+      "seed": 102,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.8999999999999999,
+      "credits_used": 0,
+      "decisions": 27,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 61,
+      "seed": 103,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 62,
+      "seed": 104,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 29,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 63,
+      "seed": 105,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 21,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 64,
+      "seed": 106,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7,
+      "credits_used": 0,
+      "decisions": 8,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 65,
+      "seed": 107,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.8999999999999999,
+      "credits_used": 0,
+      "decisions": 13,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 66,
+      "seed": 108,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 20,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 67,
+      "seed": 109,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 68,
+      "seed": 110,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 14,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 69,
+      "seed": 111,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.2,
+      "credits_used": 0,
+      "decisions": 30,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 70,
+      "seed": 112,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 71,
+      "seed": 113,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 1.2,
+      "credits_used": 0,
+      "decisions": 30,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 72,
+      "seed": 114,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 29,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 73,
+      "seed": 115,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 74,
+      "seed": 116,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 14,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 75,
+      "seed": 117,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 17,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 76,
+      "seed": 118,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 77,
+      "seed": 119,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 16,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 78,
+      "seed": 120,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 14,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 79,
+      "seed": 121,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 80,
+      "seed": 122,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 28,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 81,
+      "seed": 123,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.8999999999999999,
+      "credits_used": 0,
+      "decisions": 14,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 82,
+      "seed": 124,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 83,
+      "seed": 125,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 16,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 84,
+      "seed": 126,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.2,
+      "credits_used": 0,
+      "decisions": 25,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 85,
+      "seed": 127,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 86,
+      "seed": 128,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 16,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 87,
+      "seed": 129,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.8999999999999999,
+      "credits_used": 0,
+      "decisions": 22,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 88,
+      "seed": 130,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 89,
+      "seed": 131,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.8999999999999999,
+      "credits_used": 0,
+      "decisions": 27,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 90,
+      "seed": 132,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 26,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 91,
+      "seed": 133,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 92,
+      "seed": 134,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 14,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 93,
+      "seed": 135,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 1.3,
+      "credits_used": 0,
+      "decisions": 26,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 94,
+      "seed": 136,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 95,
+      "seed": 137,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 16,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 96,
+      "seed": 138,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.9999999999999999,
+      "credits_used": 0,
+      "decisions": 19,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 97,
+      "seed": 139,
+      "opponent": "aggressive",
+      "won": false,
+      "total_reward": 0.7999999999999999,
+      "credits_used": 0,
+      "decisions": 10,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 98,
+      "seed": 140,
+      "opponent": "defensive",
+      "won": false,
+      "total_reward": 1.0999999999999999,
+      "credits_used": 0,
+      "decisions": 29,
+      "budget_remaining": 1000
+    },
+    {
+      "game_idx": 99,
+      "seed": 141,
+      "opponent": "passive",
+      "won": false,
+      "total_reward": 0.7,
+      "credits_used": 0,
+      "decisions": 25,
+      "budget_remaining": 1000
+    }
+  ]
+}
