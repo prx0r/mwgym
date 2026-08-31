@@ -106,35 +106,26 @@ def run_direct(task: CodingTask, workspace: Path) -> dict:
 
 
 def run_letta_stateless(task: CodingTask, workspace: Path) -> dict:
-    """Arm B: Letta stateless (same as direct but through Letta service)."""
+    """Arm B: Letta stateless — runs in background, waits for completion."""
     from mwgym.harnesses.real_letta import RealLettaAdapter
 
     ws = workspace / task.id
     ws.mkdir(parents=True, exist_ok=True)
 
     letta = RealLettaAdapter()
-
-    # Ensure worker exists
     worker_id = "mwgym-harbor-v2"
-    letta._request('POST', '/workers', {
-        'worker_id': worker_id,
-        'model': 'opencode-go/mimo-v2.5',
-        'memory': [{'label': 'persona', 'value': 'You are a Python programmer.'}],
-    })
+    letta._ensure_worker(worker_id)
 
-    # Run task
     t0 = time.time()
-    result = letta._request('POST', f'/workers/{worker_id}/run', {
-        'task': task.instruction,
-        'workspace': str(ws),
-        'genome': {'memory_mode': 'off', 'max_steps': 1},
-    })
+    result = letta.run(
+        task=task.instruction,
+        workspace=str(ws),
+        worker_id=worker_id,
+        timeout=180,  # 3 minutes for Letta
+    )
     duration_ms = int((time.time() - t0) * 1000)
 
-    if 'error' in result:
-        return {"ok": False, "error": result['error'], "duration_ms": duration_ms}
-
-    output = result.get("output", "")
+    output = result.output or ""
     code_file = ws / "solution.py"
     if "```python" in output:
         code = output.split("```python")[1].split("```")[0].strip()
@@ -147,47 +138,46 @@ def run_letta_stateless(task: CodingTask, workspace: Path) -> dict:
     test_result = _run_test(code, task.test_code, ws)
 
     return {
-        "ok": True,
+        "ok": result.ok,
         "output": output,
         "code": code,
         "test_passed": test_result["passed"],
         "test_error": test_result.get("error", ""),
         "duration_ms": duration_ms,
-        "tokens": sum(m.get("total_tokens", 0) for m in result.get("model_calls", [])),
+        "tokens": result.total_tokens,
     }
 
 
 def run_letta_stateful(task: CodingTask, workspace: Path) -> dict:
-    """Arm C: Letta persistent (stateful memory)."""
+    """Arm C: Letta persistent — runs in background, waits for completion."""
     from mwgym.harnesses.real_letta import RealLettaAdapter
 
     ws = workspace / task.id
     ws.mkdir(parents=True, exist_ok=True)
 
     letta = RealLettaAdapter()
-
     worker_id = "mwgym-harbor-stateful-v2"
-    letta._request('POST', '/workers', {
-        'worker_id': worker_id,
-        'model': 'opencode-go/mimo-v2.5',
-        'memory': [
-            {'label': 'persona', 'value': 'You are a Python programmer. Remember what works.'},
-            {'label': 'moltwork', 'value': 'Track successful patterns.'},
-        ],
-    })
+    letta._ensure_worker(worker_id)
+
+    # Create genome with stateful memory
+    genome = WorkerGenome(
+        id="harbor-stateful",
+        memory_enabled=True,
+        memory_mode="letta",
+        max_model_requests=4,
+    )
 
     t0 = time.time()
-    result = letta._request('POST', f'/workers/{worker_id}/run', {
-        'task': task.instruction,
-        'workspace': str(ws),
-        'genome': {'memory_mode': 'letta', 'max_steps': 4},
-    })
+    result = letta.run(
+        task=task.instruction,
+        workspace=str(ws),
+        worker_id=worker_id,
+        genome=genome,
+        timeout=180,
+    )
     duration_ms = int((time.time() - t0) * 1000)
 
-    if 'error' in result:
-        return {"ok": False, "error": result['error'], "duration_ms": duration_ms}
-
-    output = result.get("output", "")
+    output = result.output or ""
     code_file = ws / "solution.py"
     if "```python" in output:
         code = output.split("```python")[1].split("```")[0].strip()
@@ -200,13 +190,13 @@ def run_letta_stateful(task: CodingTask, workspace: Path) -> dict:
     test_result = _run_test(code, task.test_code, ws)
 
     return {
-        "ok": True,
+        "ok": result.ok,
         "output": output,
         "code": code,
         "test_passed": test_result["passed"],
         "test_error": test_result.get("error", ""),
         "duration_ms": duration_ms,
-        "tokens": sum(m.get("total_tokens", 0) for m in result.get("model_calls", [])),
+        "tokens": result.total_tokens,
     }
 
 
