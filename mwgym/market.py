@@ -279,15 +279,15 @@ PROMOTIONS: list[UsagePromotion] = [
         evidence_id="opencode-go-glm-2x-aug2026",
         verification_state=VerificationState.RECONCILED.value,
     ),
-    # Hy3: 8× usage — localized pages only, English canonical does NOT show it
+    # Hy3: inconsistency between /docs/go/ (4,300) and /go (5,400)
     UsagePromotion(
         provider="opencode",
         plan="go",
         model_id="hy3",
         promotion_type="usage_limit_multiplier",
-        multiplier=8.0,
-        scope=["5h"],  # only verified on 5h window
-        evidence_id="opencode-go-hy3-8x-aug2026",
+        multiplier=1.26,  # 5,400 / 4,300 = observed discrepancy
+        scope=["5h"],
+        evidence_id="opencode-go-hy3-inconsistency-aug2026",
         verification_state=VerificationState.CONFLICTING_SOURCES.value,
     ),
 ]
