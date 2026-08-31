@@ -1,15 +1,9 @@
-"""YGO World Adapter — BATS-integrated genome strategies for YGO.
+"""YGO World Adapter — resource-rational genome strategies for YGO.
 
-Every decision goes through BATS:
-- should_escalate() → buy Expert Policy (synthetic x402)
-- should_branch() → explore non-optimal action
-- select_model() → choose action type based on budget/uncertainty
+Per spec: the current implementation uses ThresholdBudgetAllocator (not BATS).
+Real BATS requires: dig/pivot/verify/summarize/meta-actions.
 
-DecisionPoints are recorded with full context and written to LabProjection.
-Genome thresholds map to BATS parameters.
-
-Usage:
-  python3 -m mwgym.worlds.ygo --games 10 --all
+This is the threshold-budget baseline, not the full BATS treatment.
 """
 from __future__ import annotations
 
@@ -28,7 +22,7 @@ from mwgym.core.budget_ledger import BudgetLedger
 from mwgym.worlds.ygo.env import YGOEnv, SHOP, OPPONENT_STRATEGIES
 from mwgym.worlds.ygo.evaluator import evaluate_game
 
-# Import BATS from WorkerKit
+# Import ThresholdBudgetAllocator from WorkerKit (not BATS)
 sys.path.insert(0, str(Path("/root/workerkit")))
 from providers.bats import BATS, BudgetState
 from providers.registry import ProviderRegistry
