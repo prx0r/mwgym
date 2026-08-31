@@ -1,31 +1,38 @@
-"""Job Classifier — maps Oracle job offers to CG world types.
+"""Job Classifier — maps Oracle job offers to CG world types + marketplace adapters.
 
-Two dimensions:
+Three dimensions:
 1. PROCESS TYPE: What does the agent literally do? (determines CG world)
 2. AUTONOMY LEVEL: How much can the agent do alone? (H0-H4)
+3. SKILL FAMILY: Which reusable skill does this exercise? (F0-F18)
 
 Same process type, different autonomy = same CG world, different config.
 
 Example:
-- Roblox game = Game Dev + H0 (publish via REST)
-- Fortnite game = Game Dev + H1 (publish needs human)
-- Unity asset = Game Dev + H2 (asset store review)
+- Roblox game = game_dev + H0 (publish via REST) → skill F5
+- Fortnite game = game_dev + H1 (publish needs human) → skill F6
+- Unity asset = game_dev + H2 (asset store review) → skill F7
 
 All three use the same GameDevWorld, but with different autonomy configs.
+
+The classifier also knows which marketplace adapters can handle each process type,
+so the orchestrator can route jobs to the right submission channel.
 """
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
 class ClassificationResult:
     process_type: str    # What the agent does
+    skill_family: str    # Reusable skill (F0-F18)
     autonomy_level: str  # How much it can do alone (H0-H4)
     cg_world: str        # Which CG worldpack to use
     confidence: float
     reasoning: str
+    recommended_adapters: list[str] = field(default_factory=list)  # marketplace IDs
+    recommended_tools: list[str] = field(default_factory=list)     # MCP tools needed
 
 
 # Process types → CG worlds
@@ -120,6 +127,145 @@ PROCESS_TYPES = {
         ],
         "tools_hint": ["markdown", "docs", "tutorial"],
     },
+    # F7: General game dev (Unity/Unreal assets, not Roblox/Fortnite specific)
+    "game_asset": {
+        "cg_world": "game_asset",
+        "patterns": [
+            r"asset\s*store", r"3d\s*model", r"shader", r"vfx",
+            r"game\s*asset", r"unity\s*asset", r"unreal\s*asset",
+            r"prefab", r"material", r"animation",
+        ],
+        "tools_hint": ["blender", "unity", "unreal", "asset"],
+    },
+    # F14: 3D/Creative assets
+    "creative_3d": {
+        "cg_world": "creative_3d",
+        "patterns": [
+            r"3d\s*(model|asset|print)", r"mesh", r"texture", r"uv\s*unwrap",
+            r"render", r"blender", r"fab", r"turbosquid", r"cgtrader",
+            r"stl", r"obj", r"fbx", r"low.?poly", r"lod",
+        ],
+        "tools_hint": ["blender", "3d", "mesh", "texture", "render"],
+    },
+    # F15: Scientific ML (different from generic ml_training)
+    "scientific_ml": {
+        "cg_world": "scientific_ml",
+        "patterns": [
+            r"medical\s*(imaging|data)", r"segmentation", r"dicom",
+            r"ct\s*scan", r"mri", r"vesuvius", r"scroll",
+            r"drivendata", r"grand\s*challenge", r"scientific.*benchmark",
+            r"bioimaging", r"pathology",
+        ],
+        "tools_hint": ["medical", "imaging", "scientific", "benchmark"],
+    },
+    # F16: HR/CRM integration
+    "hr_crm": {
+        "cg_world": "hr_crm",
+        "patterns": [
+            r"hr\s*(system|integration|data)", r"bamboo", r"personio",
+            r"greenhouse", r"lever", r"recruiting", r"applicant",
+            r"employee\s*(sync|data)", r"payroll", r"crm\s*sync",
+        ],
+        "tools_hint": ["hr", "crm", "recruiting", "employee"],
+    },
+    # F17: Finance/accounting
+    "finance_accounting": {
+        "cg_world": "finance_accounting",
+        "patterns": [
+            r"accounting", r"ledger", r"invoic", r"reconcil",
+            r"xero", r"quickbooks", r"sage", r"tax\s*export",
+            r"financial\s*(report|data)", r"bookkeep",
+        ],
+        "tools_hint": ["accounting", "ledger", "invoice", "finance"],
+    },
+    # F18: Marketplace distribution (meta-skill)
+    "distribution": {
+        "cg_world": "distribution",
+        "patterns": [
+            r"cross.?list", r"app\s*store\s*optimization", r"aso",
+            r"listing\s*optimi", r"marketplace\s*distribut",
+            r"review\s*monitor", r"pricing\s*optimi",
+        ],
+        "tools_hint": ["listing", "distribution", "optimization"],
+    },
+    # Workflow automation (n8n, Make, Zapier)
+    "workflow_automation": {
+        "cg_world": "workflow_automation",
+        "patterns": [
+            r"n8n", r"zapier", r"make\.com", r"automat.*workflow",
+            r"trigger.*action", r"pipeline", r"etl",
+            r"webhook.*chain", r"error.*handl.*retry",
+        ],
+        "tools_hint": ["n8n", "zapier", "make", "workflow"],
+    },
+}
+
+# Process type → skill family mapping
+PROCESS_TO_SKILL = {
+    "api_endpoint": "F1",
+    "browser_extension": "F2",
+    "platform_integration": "F3",
+    "game_dev": "F5",       # Roblox/Fortnite specific
+    "game_asset": "F7",     # Unity/Unreal general
+    "web_scraping": "F8",
+    "research_analysis": "F9",
+    "security_audit": "F10",
+    "content_creation": "F11",  # templates/themes
+    "ml_training": "F12",
+    "documentation": "F13",
+    "creative_3d": "F14",
+    "scientific_ml": "F15",
+    "hr_crm": "F16",
+    "finance_accounting": "F17",
+    "distribution": "F18",
+    "workflow_automation": "F19",
+    "generic_coding": "F0",
+}
+
+# Process type → which marketplace adapters can handle it
+PROCESS_TO_ADAPTERS = {
+    "api_endpoint": ["x402arena", "req402", "agentpact", "dealwork", "olas"],
+    "browser_extension": ["chromewebstore", "firefoxaddons", "edgeaddons"],
+    "platform_integration": ["atlassian", "hubspot", "shopify", "monday",
+                             "activecampaign", "asana", "salesforce"],
+    "game_dev": ["roblox", "fortnite", "curseforge", "modrinth"],
+    "game_asset": ["unity", "unreal", "fab", "itchio"],
+    "web_scraping": ["apify", "agentdatahub"],
+    "research_analysis": ["metaculus", "allora", "agentpact", "dealwork",
+                          "toku", "drivendata", "aicrowd"],
+    "security_audit": ["google_oss", "immunefi", "cantina", "hackenproof"],
+    "content_creation": ["framer", "webflow", "canva", "creativemarket"],
+    "ml_training": ["kaggle", "numerai", "drivendata", "aicrowd", "huggingface"],
+    "documentation": ["github"],
+    "creative_3d": ["fab", "turbosquid", "cgtrader", "renderhub"],
+    "scientific_ml": ["drivendata", "aicrowd", "grandchallenge", "vesuvius"],
+    "hr_crm": ["bambohr", "personio", "greenhouse", "lever", "salesforce"],
+    "finance_accounting": ["xero", "quickbooks", "sage", "freshbooks", "visma"],
+    "distribution": ["all"],  # meta-skill, applies everywhere
+    "workflow_automation": ["n8n", "zapier", "make"],
+    "generic_coding": ["agentpact", "dealwork", "moltjobs", "github"],
+}
+
+# Process type → MCP tools the agent needs
+PROCESS_TO_TOOLS = {
+    "api_endpoint": ["http_client", "schema_validator", "deploy_tool"],
+    "browser_extension": ["playwright", "chrome_devtools", "screenshot"],
+    "platform_integration": ["oauth_client", "api_client", "webhook_handler"],
+    "game_dev": ["studio_mcp", "playwright", "rest_client"],
+    "game_asset": ["blender_api", "editor_api", "screenshot"],
+    "web_scraping": ["http_client", "html_parser", "playwright"],
+    "research_analysis": ["web_search", "document_parser", "report_generator"],
+    "security_audit": ["git_client", "compiler", "test_runner", "fuzzer"],
+    "content_creation": ["design_tool", "screenshot", "responsive_tester"],
+    "ml_training": ["python_runner", "gpu_access", "dataset_loader"],
+    "documentation": ["markdown_editor", "screenshot"],
+    "creative_3d": ["blender_api", "render_engine", "lod_optimizer"],
+    "scientific_ml": ["python_runner", "gpu_access", "medical_reader"],
+    "hr_crm": ["oauth_client", "api_client", "data_mapper"],
+    "finance_accounting": ["oauth_client", "api_client", "reconciler"],
+    "distribution": ["marketplace_api", "aso_tool", "review_monitor"],
+    "workflow_automation": ["n8n_client", "webhook_handler", "error_monitor"],
+    "generic_coding": ["git_client", "compiler", "test_runner"],
 }
 
 # Autonomy level detection
