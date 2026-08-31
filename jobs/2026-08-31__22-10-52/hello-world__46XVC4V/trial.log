@@ -1,0 +1,3 @@
+Skipping image OS validation for hb__9a62b5c0d6e2de28d19a8ca1d32b759e: docker inspect returned 1
+Collecting main service artifacts
+Trial hello-world__46XVC4V failed: No reward file found at jobs/2026-08-31__22-10-52/hello-world__46XVC4V/verifier/reward.txt or jobs/2026-08-31__22-10-52/hello-world__46XVC4V/verifier/reward.json

@@ -1,0 +1,5 @@
+Skipping image OS validation for hb__9a62b5c0d6e2de28d19a8ca1d32b759e: docker inspect returned 1
+Collecting main service artifacts
+Trial hello-world__jsAZPvX failed: No reward file found at jobs/2026-08-31__22-12-08/hello-world__jsAZPvX/verifier/reward.txt or jobs/2026-08-31__22-12-08/hello-world__jsAZPvX/verifier/reward.json
+Exception RewardFileNotFoundError is in exclude_exceptions, not retrying
+Not retrying trial because the exception is not in include_exceptions or the maximum number of retries has been reached

@@ -1,0 +1,2 @@
+/tests/test.sh: line 2: cd: /logs/solution: No such file or directory
+/tests/test.sh: line 5: python3: command not found

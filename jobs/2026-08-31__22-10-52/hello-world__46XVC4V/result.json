@@ -1,0 +1,115 @@
+{
+    "id": "d0efeb2b-58d1-43dc-a5c4-837941a01265",
+    "task_name": "mwgym/hello-world",
+    "trial_name": "hello-world__46XVC4V",
+    "trial_uri": "file:///root/mwgym/jobs/2026-08-31__22-10-52/hello-world__46XVC4V",
+    "task_id": {
+        "path": "tasks/hello-world"
+    },
+    "source": null,
+    "task_checksum": "8fa77f602321a2b8081e81b0018a37a3dc6ac2f0d28594f0d1d6328671b687fc",
+    "config": {
+        "task": {
+            "path": "tasks/hello-world",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "hello-world__46XVC4V",
+        "trials_dir": "jobs/2026-08-31__22-10-52",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "oracle",
+            "import_path": null,
+            "model_name": null,
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {},
+            "mcp_servers": []
+        },
+        "user_agent": null,
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [],
+        "extra_instructions": [],
+        "job_id": "c4758402-92ee-492a-9d4d-2443f785176a",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "oracle",
+        "version": "1.0.0",
+        "model_info": null
+    },
+    "agent_result": {
+        "n_input_tokens": null,
+        "n_cache_tokens": null,
+        "n_output_tokens": null,
+        "cost_usd": null,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": null,
+    "verifier_environment_mode": "shared",
+    "exception_info": {
+        "exception_type": "RewardFileNotFoundError",
+        "exception_message": "No reward file found at jobs/2026-08-31__22-10-52/hello-world__46XVC4V/verifier/reward.txt or jobs/2026-08-31__22-10-52/hello-world__46XVC4V/verifier/reward.json",
+        "exception_traceback": "Traceback (most recent call last):\n  File \"/usr/local/lib/python3.14/dist-packages/harbor/trial/trial.py\", line 409, in run\n    await self._run()\n  File \"/usr/local/lib/python3.14/dist-packages/harbor/trial/single_step.py\", line 52, in _run\n    await self._run_verifier()\n  File \"/usr/local/lib/python3.14/dist-packages/harbor/trial/single_step.py\", line 106, in _run_verifier\n    self.result.verifier_result = await self._run_shared_verifier(\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<2 lines>...\n    )\n    ^\n  File \"/usr/local/lib/python3.14/dist-packages/harbor/trial/trial.py\", line 670, in _run_shared_verifier\n    return await asyncio.wait_for(\n           ^^^^^^^^^^^^^^^^^^^^^^^\n        verifier.verify(), timeout=timeout_sec\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/lib/python3.14/asyncio/tasks.py\", line 488, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/usr/local/lib/python3.14/dist-packages/harbor/verifier/verifier.py\", line 232, in verify\n    raise RewardFileNotFoundError(\n    ...<3 lines>...\n    )\nharbor.verifier.verifier.RewardFileNotFoundError: No reward file found at jobs/2026-08-31__22-10-52/hello-world__46XVC4V/verifier/reward.txt or jobs/2026-08-31__22-10-52/hello-world__46XVC4V/verifier/reward.json\n",
+        "occurred_at": "2026-08-31T22:10:59.794443Z"
+    },
+    "started_at": "2026-08-31T22:10:53.359965Z",
+    "finished_at": "2026-08-31T22:11:10.693230Z",
+    "environment_setup": {
+        "started_at": "2026-08-31T22:10:53.398464Z",
+        "finished_at": "2026-08-31T22:10:58.491712Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-08-31T22:10:58.491779Z",
+        "finished_at": "2026-08-31T22:10:58.491837Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-08-31T22:10:58.491917Z",
+        "finished_at": "2026-08-31T22:10:58.889737Z"
+    },
+    "verifier": {
+        "started_at": "2026-08-31T22:10:59.380650Z",
+        "finished_at": "2026-08-31T22:10:59.791131Z"
+    },
+    "step_results": null
+}

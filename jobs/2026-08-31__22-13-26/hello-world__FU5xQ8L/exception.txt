@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/dist-packages/harbor/trial/trial.py", line 409, in run
+    await self._run()
+  File "/usr/local/lib/python3.14/dist-packages/harbor/trial/single_step.py", line 52, in _run
+    await self._run_verifier()
+  File "/usr/local/lib/python3.14/dist-packages/harbor/trial/single_step.py", line 106, in _run_verifier
+    self.result.verifier_result = await self._run_shared_verifier(
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "/usr/local/lib/python3.14/dist-packages/harbor/trial/trial.py", line 670, in _run_shared_verifier
+    return await asyncio.wait_for(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+        verifier.verify(), timeout=timeout_sec
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/lib/python3.14/asyncio/tasks.py", line 488, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/usr/local/lib/python3.14/dist-packages/harbor/verifier/verifier.py", line 232, in verify
+    raise RewardFileNotFoundError(
+    ...<3 lines>...
+    )
+harbor.verifier.verifier.RewardFileNotFoundError: No reward file found at jobs/2026-08-31__22-13-26/hello-world__FU5xQ8L/verifier/reward.txt or jobs/2026-08-31__22-13-26/hello-world__FU5xQ8L/verifier/reward.json
