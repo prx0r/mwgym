@@ -5,20 +5,101 @@ Pricing is not a scalar. The same model has:
   - amortized_price: subscription fee divided across fully-utilized included value
   - marginal_price: what the NEXT request costs given current subscription/quota state
 
-This module models all three. It includes a subscription plan registry with
-model-specific included usage values, a reconciliation validator that reproduces
-published request limits, and temporal promotions stored separately from base facts.
+This module models all three. It includes:
+  - Subscription plan registry with model-specific included usage values
+  - Temporal promotions stored separately from base facts
+  - Reconciliation validator that reproduces published request limits
+  - Verification states including conflict detection
+  - Source observation freshness tracking
 
 Source: OpenCode Go docs (opencode.ai/docs/go/), verified August 31, 2026.
+Reference: /root/livellm/refs/pricing-complexity-ref.md
 """
 from __future__ import annotations
 
 import json
 import os
+import re
+import hashlib
 import time
 from dataclasses import dataclass, field
+from enum import Enum
 from pathlib import Path
 from typing import Optional
+
+
+# ─── Verification States ─────────────────────────────────────────────────────
+
+class VerificationState(Enum):
+    """How confident we are in a pricing fact."""
+    CANDIDATE = "candidate"           # discovered but not yet verified
+    VERIFIED = "verified"             # confirmed against official source
+    RECONCILED = "reconciled"         # verified AND math matches published limits
+    CONFLICTING_SOURCES = "conflicting_official_sources"  # official surfaces disagree
+    EXPIRED = "expired"               # no longer observed on fresh fetches
+
+
+# ─── Subscription Economics (permanent plan facts) ───────────────────────────
+
+@dataclass
+class SubscriptionEconomics:
+    """Permanent plan economics — NOT affected by temporary promotions."""
+    provider: str
+    plan: str
+    model_id: str
+    subscription_fee_usd: float
+    included_usage_usd: float
+    base_value_multiple: float  # DERIVED: included / fee — never scrape directly
+    evidence_id: str = ""
+    observed_at: str = ""
+
+
+# ─── Usage Promotions (temporal facts) ──────────────────────────────────────
+
+@dataclass
+class UsagePromotion:
+    """A temporary usage-limit modification — stored SEPARATELY from base facts.
+
+    Never mutate subscription.included_usage because a banner appeared.
+    Instead, store the promotion with its scope, validity, and verification state.
+    """
+    provider: str
+    plan: str
+    model_id: str
+    promotion_type: str  # "usage_limit_multiplier", "price_discount"
+    multiplier: float = 1.0
+    scope: list[str] = field(default_factory=list)  # ["5h"], ["5h", "week", "month"], or ["unknown"]
+    valid_from: str = ""
+    valid_to: str = ""
+    discovered_at: str = ""
+    evidence_id: str = ""
+    verification_state: str = VerificationState.CANDIDATE.value
+
+
+# ─── Source Observation (freshness tracking) ─────────────────────────────────
+
+@dataclass
+class SourceObservation:
+    """HTTP freshness metadata for a source fetch."""
+    url: str = ""
+    fetched_at: str = ""
+    status: int = 0
+    etag: str | None = None
+    last_modified: str | None = None
+    cache_control: str | None = None
+    age: str | None = None
+    raw_sha256: str = ""
+    normalized_sha256: str = ""
+
+
+# ─── Generic Promo Parser ────────────────────────────────────────────────────
+# Matches "2× usage limits", "8x usage", etc. on a per-card basis.
+# Do NOT search whole page — associate with nearest model card/DOM unit.
+
+PROMO_RE = re.compile(
+    r"(?P<multiplier>\d+(?:\.\d+)?)\s*[x×]\s*(?:usage(?:\s+limits?)?|limits?)",
+    re.IGNORECASE,
+)
 
 
 # ─── OpenCode Go Plan ────────────────────────────────────────────────────────
@@ -185,31 +266,29 @@ DEEPSEEK_PEAK_HOURS_UTC = [(1, 4), (6, 10)]
 
 # ─── Promotions (temporal facts, NOT baked into base tariff) ─────────────────
 
-@dataclass
-class Promotion:
-    """A temporary pricing modification — stored separately from base facts."""
-    provider: str
-    model_id: str
-    type: str  # "usage_limit_multiplier", "price_discount"
-    multiplier: float = 1.0
-    discount_pct: float = 0.0
-    valid_from: str = ""
-    valid_to: str = ""
-    scope: dict = field(default_factory=dict)  # which limits are affected
-    evidence_id: str = ""
-
-
 # Verified from opencode.ai/go — August 31, 2026
-# The Go landing page shows "GLM-5.3-Flash gets 2× usage limits for a limited time"
-# Request estimate doubles from 1,580 to 3,160 for 5-hour limit.
-PROMOTIONS: list[Promotion] = [
-    Promotion(
-        provider="opencode-go",
+PROMOTIONS: list[UsagePromotion] = [
+    # GLM-5.3-Flash: 2× usage — English canonical banner + localized confirmation
+    UsagePromotion(
+        provider="opencode",
+        plan="go",
         model_id="glm-5.3-flash",
-        type="usage_limit_multiplier",
+        promotion_type="usage_limit_multiplier",
         multiplier=2.0,
-        scope={"5h": "verified", "week": "inferred", "month": "inferred"},
+        scope=["5h", "week", "month"],  # localized pages show all windows doubled
         evidence_id="opencode-go-glm-2x-aug2026",
+        verification_state=VerificationState.RECONCILED.value,
+    ),
+    # Hy3: 8× usage — localized pages only, English canonical does NOT show it
+    UsagePromotion(
+        provider="opencode",
+        plan="go",
+        model_id="hy3",
+        promotion_type="usage_limit_multiplier",
+        multiplier=8.0,
+        scope=["5h"],  # only verified on 5h window
+        evidence_id="opencode-go-hy3-8x-aug2026",
+        verification_state=VerificationState.CONFLICTING_SOURCES.value,
     ),
 ]
 
@@ -236,12 +315,15 @@ class PricingBundle:
 def compute_pricing(
     tariff: GoModelTariff | None,
     plan: GoPlan = GO_PLAN,
-    promos: list[Promotion] | None = None,
+    promos: list[UsagePromotion] | None = None,
 ) -> PricingBundle:
     """Compute all pricing concepts for a model tariff.
 
     The amortized price is: list_price × (plan_fee / model_usage)
     NOT list_price / 6.
+
+    Promotions are applied ON TOP of base subscription economics.
+    Only promotions with scope including the target window are applied.
     """
     if tariff is None:
         return PricingBundle()
@@ -251,10 +333,14 @@ def compute_pricing(
 
     # Promotion multiplier (from temporal facts, not base tariff)
     promo_mult = 1.0
+    promo_state = VerificationState.CANDIDATE.value
     if promos:
         for p in promos:
-            if p.model_id == tariff.model_id and p.type == "usage_limit_multiplier":
-                promo_mult *= p.multiplier
+            if p.model_id == tariff.model_id and p.promotion_type == "usage_limit_multiplier":
+                # Only apply if scope includes month (full utilization)
+                if "month" in p.scope or "unknown" in p.scope:
+                    promo_mult *= p.multiplier
+                    promo_state = p.verification_state
 
     effective_multiplier = base_multiplier * promo_mult
 

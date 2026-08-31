@@ -1,42 +1,31 @@
-"""DynamicRouter — picks the right genome/harness for each task.
+"""DynamicRouter — BATS-integrated task routing.
 
-Enhanced with LiveLLM market intelligence:
-- Fetches real-time pricing, promotions, and capabilities from LiveLLM
-- Builds DecisionOptions with verified economic data
-- Routes to the best model based on cost/quality tradeoffs
-- Logs stale-vs-live comparisons for auditability
+Uses BATS (Budget-Aware Token Scheduler) for routing decisions:
+- should_escalate() → use fast-bundle (produces artifacts, more expensive)
+- should_branch() → try multiple harnesses
+- Budget tracking via BudgetState
 
 Routes between:
 - direct-fast: simple text output tasks (cheaper, faster)
 - fast-bundle: multi-file or structured output tasks (produces artifacts)
-
-When LiveLLM is available, the router can also pick specific models based on
-current market conditions (e.g., a promoted model that's cheaper than the default).
 """
 from __future__ import annotations
 
 import re
+import sys
 import time
 from dataclasses import dataclass, field
+from pathlib import Path
 
 from ..schema.genome import WorkerGenome
 from ..harnesses.direct import DirectAdapter
 from ..harnesses.fast import FastExecutor
 from .base import HarnessInstance, HarnessRun
 
-# Lazy import to avoid circular deps
-_MarketClient = None
-_MarketSnapshot = None
-_ModelRoute = None
-
-
-def _get_market_types():
-    global _MarketClient, _MarketSnapshot, _ModelRoute
-    if _MarketClient is None:
-        from ..market import MarketClient, MarketSnapshot, ModelRoute
-        _MarketClient = MarketClient
-        _MarketSnapshot = MarketSnapshot
-        _ModelRoute = ModelRoute
+# Import BATS from WorkerKit
+sys.path.insert(0, str(Path("/root/workerkit")))
+from providers.bats import BATS, BudgetState
+from providers.registry import ProviderRegistry
 
 
 # Patterns that indicate we need structured output (fast-bundle)
@@ -89,10 +78,12 @@ class RouterDecision:
 
 
 class DynamicRouter:
-    """Classifies tasks and routes to the appropriate genome.
+    """BATS-integrated task router.
 
-    When a MarketClient is provided, routing decisions incorporate real-time
-    pricing data from LiveLLM instead of hardcoded cost assumptions.
+    Uses BATS for routing decisions:
+    - should_escalate() → use fast-bundle (produces artifacts)
+    - should_branch() → try multiple harnesses
+    - Budget tracking via BudgetState
     """
 
     def __init__(self, market_client=None):
@@ -100,6 +91,14 @@ class DynamicRouter:
         self.fast = FastExecutor()
         self.decisions: list[dict] = []
         self.market = market_client
+
+        # BATS integration
+        self._registry = ProviderRegistry()
+        self._bats = BATS(self._registry)
+        self._budget = BudgetState(
+            total_usd=0.10, remaining_usd=0.10,
+            max_model_calls=40, max_wall_seconds=300,
+        )
 
     def _build_market_options(self, task: str) -> list[tuple[str, MarketContext]]:
         """Fetch market data and build economically-informed options.
@@ -241,14 +240,10 @@ class DynamicRouter:
         ))
 
     def classify(self, task: str) -> RouterDecision:
-        """Determine which genome should handle this task.
+        """BATS-integrated task classification.
 
-        Without LiveLLM: uses regex patterns + hardcoded defaults.
-        With LiveLLM: uses real market data to pick the best model.
-
-        Default model is MiMo V2.5 — best all-around for agent work
-        (1M context, multimodal, strong reasoning, $0.0028/M cached).
-        Only deviates when market data shows a genuinely better option.
+        Uses BATS.should_escalate() to decide whether to use fast-bundle
+        (more expensive, produces artifacts) vs direct-fast (cheaper).
         """
         task_lower = task.lower()
 
@@ -265,88 +260,53 @@ class DynamicRouter:
                 is_simple = True
                 break
 
-        # Stale decision (what we'd pick without market data)
-        stale_model, stale_ctx = self._stale_default()
-        if is_complex:
-            stale_model = "fast-bundle"
-            stale_ctx = MarketContext(source="stale", model="fast-bundle")
+        # BATS decision: should we escalate to fast-bundle?
+        # Quality score: 1.0 for simple tasks, lower for complex
+        quality_score = 1.0 if is_simple else 0.6 if is_complex else 0.8
 
-        # Market-aware decision
-        market_options = self._build_market_options(task)
+        should_escalate = self._bats.should_escalate(
+            current_model="direct-fast",
+            quality_score=quality_score,
+            budget=self._budget,
+        )
 
-        if not market_options:
-            # No market data available — fall back to stale
-            genome = "fast-bundle" if is_complex else "direct-fast"
-            reason = "no market data" if self.market else "no market client configured"
-            if is_simple:
-                genome = "direct-fast"
-                reason = "matched simple pattern"
-            elif is_complex:
-                reason = "matched complex pattern"
-            else:
-                reason = "defaulting to MiMo V2.5 (no market data)"
-
-            return RouterDecision(
-                genome=genome,
-                reason=reason,
-                confidence=0.5 if not is_simple and not is_complex else 0.8,
-                market=stale_ctx,
-            )
-
-        # Score all models and pick the best
-        scored = []
-        for name, ctx in market_options:
-            route = None
-            for r in self.market.fetch().models.get(name, []):
-                if r.provider == ctx.provider:
-                    route = r
-                    break
-            if route:
-                score = self._score_model(name, route)
-                scored.append((name, ctx, score))
-
-        scored.sort(key=lambda x: x[2], reverse=True)
-
+        # Decision logic
         if is_simple:
-            # Simple tasks: MiMo is fine (it's fast and cheap on cached)
-            best_name, best_ctx, best_score = scored[0]
             genome = "direct-fast"
-            reason = f"best scored: {best_name} (score={best_score:.0f})"
-        elif is_complex:
-            # Complex tasks: need big context — prefer models with >500K ctx
-            big_ctx = [(n, c, s) for n, c, s in scored if (c.context_tokens or 0) >= 500_000]
-            if big_ctx:
-                best_name, best_ctx, best_score = big_ctx[0]
-            else:
-                best_name, best_ctx, best_score = scored[0]
+            reason = "simple task, no escalation needed"
+            confidence = 0.9
+        elif is_complex and should_escalate:
             genome = "fast-bundle"
-            reason = f"best scored for complex work: {best_name} (score={best_score:.0f})"
-        else:
-            # Default: best overall score
-            best_name, best_ctx, best_score = scored[0]
+            reason = f"BATS escalation: complex task needs artifacts (quality={quality_score:.2f})"
+            confidence = 0.8
+        elif is_complex and not should_escalate:
+            # BATS says don't escalate — try direct first
             genome = "direct-fast"
-            reason = f"best scored: {best_name} (score={best_score:.0f})"
+            reason = f"BATS says no escalation: try direct first (quality={quality_score:.2f})"
+            confidence = 0.6
+        else:
+            # Default: use BATS to decide
+            if should_escalate:
+                genome = "fast-bundle"
+                reason = f"BATS escalation: quality={quality_score:.2f}, budget={self._budget.remaining_usd:.4f}"
+                confidence = 0.7
+            else:
+                genome = "direct-fast"
+                reason = f"BATS default: quality={quality_score:.2f}, budget={self._budget.remaining_usd:.4f}"
+                confidence = 0.7
 
-        # Build stale comparison
-        stale_comparison = None
-        if best_name != stale_model:
-            stale_comparison = {
-                "without_livellm": stale_model,
-                "with_livellm": best_name,
-                "reason": reason,
-                "promotion_active": best_ctx.promotion is not None,
-            }
+        # Record BATS budget spend
+        self._budget.record_spend(0.0, tokens=0)
 
         return RouterDecision(
             genome=genome,
             reason=reason,
-            confidence=0.85 if best_ctx.confidence and best_ctx.confidence > 0.9 else 0.7,
-            market=best_ctx,
-            stale_comparison=stale_comparison,
+            confidence=confidence,
+            market=MarketContext(source="bats", model=genome),
         )
 
     async def run(self, task: str, workspace: str, run_id: str = "") -> dict:
-        """Route and execute a task with market-aware intelligence."""
+        """Route and execute a task with BATS intelligence."""
         decision = self.classify(task)
 
         genome = WorkerGenome.direct_fast() if decision.genome == "direct-fast" else WorkerGenome(
@@ -354,17 +314,6 @@ class DynamicRouter:
             thinking="disabled", memory_enabled=False,
             max_model_requests=1, max_tool_calls=10, max_wall_seconds=30, max_usd=0.002,
         )
-
-        # If market data selected a specific model, note it in the genome
-        if decision.market.model and decision.market.source == "livellm":
-            genome = WorkerGenome(
-                id=f"market-{decision.market.model}",
-                harness_kind=genome.harness_kind,
-                model_id=decision.market.model,
-                thinking="disabled", memory_enabled=False,
-                max_model_requests=1, max_tool_calls=10, max_wall_seconds=30,
-                max_usd=decision.market.effective_input_cost * 10 or 0.002,
-            )
 
         instance = HarnessInstance(harness=decision.genome, worker_id=f"router-{run_id}")
 
@@ -377,22 +326,15 @@ class DynamicRouter:
             "run_id": run_id,
             "task": task[:60],
             "routed_to": decision.genome,
-            "model": decision.market.model,
-            "provider": decision.market.provider,
             "reason": decision.reason,
             "confidence": decision.confidence,
             "success": result.ok,
-            "market_source": decision.market.source,
-            "input_per_1m": decision.market.input_per_1m,
-            "promotion": decision.market.promotion,
-            "stale_comparison": decision.stale_comparison,
+            "bats_source": decision.market.source,
         })
 
         return {
             "run_id": run_id,
             "routed_to": decision.genome,
-            "model": decision.market.model,
-            "provider": decision.market.provider,
             "reason": decision.reason,
             "confidence": decision.confidence,
             "success": result.ok,
@@ -402,12 +344,9 @@ class DynamicRouter:
             "total_tokens": result.total_tokens,
             "duration_ms": result.duration_ms,
             "cost_usd": result.cost_usd,
-            "market_context": {
+            "bats_context": {
                 "source": decision.market.source,
-                "model": decision.market.model,
-                "input_per_1m": decision.market.input_per_1m,
-                "promotion": decision.market.promotion,
-                "freshness": decision.market.freshness,
+                "budget_remaining": self._budget.remaining_usd,
+                "model_calls": self._budget.model_calls,
             },
-            "stale_comparison": decision.stale_comparison,
         }

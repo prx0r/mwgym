@@ -187,12 +187,14 @@ class LabBridge:
             data={"genomes": genome_ids, "opponents": opponents, "matrix": matrix},
         )
 
-        # Record each game
+        # Record each game + DecisionPoints
         for r in results:
             game_eval = r.get("game_eval", {})
             strategy = r.get("strategy", {})
+            run_id = f"{experiment_id}-{r.get('game_seed', 'unknown')}"
+
             self.record_ygo_run(
-                run_id=f"{experiment_id}-{r.get('game_seed', 'unknown')}",
+                run_id=run_id,
                 genome=r.get("genome", "unknown"),
                 opponent=r.get("opponent", "unknown"),
                 won=game_eval.get("won", False),
@@ -202,6 +204,10 @@ class LabBridge:
                 experiment_id=experiment_id,
             )
 
+            # Record DecisionPoints
+            for dp in r.get("decision_points", []):
+                self.record_decision_point(dp, run_id)
+
         # Record insights per genome
         for genome in genome_ids:
             wins = sum(1 for r in results if r.get("genome") == genome and r.get("game_eval", {}).get("won"))
@@ -210,14 +216,46 @@ class LabBridge:
             avg_reward = sum(r.get("game_eval", {}).get("total_reward", 0)
                            for r in results if r.get("genome") == genome) / max(1, total)
 
+            # BATS metrics
+            total_escalations = sum(r.get("strategy", {}).get("bats_escalations", 0)
+                                   for r in results if r.get("genome") == genome)
+            total_explorations = sum(r.get("strategy", {}).get("bats_explorations", 0)
+                                    for r in results if r.get("genome") == genome)
+            total_expert_buys = sum(r.get("strategy", {}).get("expert_buys", 0)
+                                   for r in results if r.get("genome") == genome)
+            avg_uncertainty = sum(r.get("strategy", {}).get("avg_uncertainty", 0)
+                                for r in results if r.get("genome") == genome) / max(1, total)
+
             self.lab.add_insight(
                 insight_id=f"insight-{experiment_id}-{genome}",
                 title=f"YGO {genome}: {win_rate*100:.0f}% win rate",
-                body=f"Genome {genome} won {wins}/{total} games across opponents {', '.join(opponents)}. "
-                     f"Avg reward: {avg_reward:.1f}.",
+                body=f"Genome {genome} won {wins}/{total} games. "
+                     f"Avg reward: {avg_reward:.1f}. "
+                     f"BATS escalations: {total_escalations}, explorations: {total_explorations}, "
+                     f"expert buys: {total_expert_buys}. Avg uncertainty: {avg_uncertainty:.2f}.",
                 evidence_runs=total,
                 confidence=win_rate,
             )
+
+    def record_decision_point(self, dp: dict, run_id: str):
+        """Record a DecisionPoint to LabProjection."""
+        # Store as an insight with the decision context
+        dp_id = dp.get("id", f"dp-{int(time.time()*1000)}")
+        context = dp.get("context_features", {})
+        selected = dp.get("selected_option_id", "?")
+
+        self.lab.add_insight(
+            insight_id=f"dp-{run_id}-{dp_id}",
+            title=f"Decision: {selected} (turn={context.get('turn', '?')})",
+            body=f"Context: credits={context.get('credits', '?')}, "
+                 f"uncertainty={context.get('uncertainty', '?')}, "
+                 f"options={context.get('options', '?')}. "
+                 f"Selected: {selected}. "
+                 f"BATS escalate={context.get('bats_escalate', '?')}, "
+                 f"branch={context.get('bats_branch', '?')}.",
+            evidence_runs=1,
+            confidence=dp.get("predicted_quality", 0.5),
+        )
 
     def summary(self) -> dict:
         """Get lab summary from WorkerKit's LabProjection."""
