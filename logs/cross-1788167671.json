@@ -587,5 +587,7 @@
       "promotion": null,
       "stale_comparison": null
     }
-  ]
+  ],
+  "runtime_class": "SYNTHETIC",
+  "runtime_class_reason": "Using synthetic YGO environment, not real ygo-agent"
 }

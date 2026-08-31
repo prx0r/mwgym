@@ -1,0 +1,7 @@
+{
+  "schema": "mwgym.upstreams-lock.v1",
+  "workerkit_sha": "e625d995c7bbb1934cf111aedad9b0973322a3d9",
+  "mwgym_sha": "1c679f5a868340d95d5828de76b882a60f627991",
+  "workerkit_remote": "https://github.com/prx0r/workerkit",
+  "mwgym_remote": "https://github.com/prx0r/mwgym"
+}

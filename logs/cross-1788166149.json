@@ -282,5 +282,7 @@
       "avg_ms": 9108,
       "total_artifacts": 9
     }
-  }
+  },
+  "runtime_class": "SYNTHETIC",
+  "runtime_class_reason": "Using synthetic YGO environment, not real ygo-agent"
 }

@@ -54192,5 +54192,7 @@
       "history_length": 13
     }
   ],
-  "summary": {}
+  "summary": {},
+  "runtime_class": "SYNTHETIC",
+  "runtime_class_reason": "Using synthetic YGO environment, not real ygo-agent"
 }

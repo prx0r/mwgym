@@ -162,3 +162,33 @@ class StackOracle:
         """Reset daily counters."""
         self._exploration_used = 0
         self.ledger.reset_run()
+
+    def allocate_with_market(self, task_family: str, task_value: float,
+                              available_assets: list[str],
+                              market_snapshot=None) -> AllocationDecision:
+        """Route using LiveLLM market data + AssetProfile posteriors.
+
+        Combines:
+        - LiveLLM real-time pricing
+        - AssetProfile success posteriors
+        - Budget constraints
+        """
+        # Get cheapest from market
+        if market_snapshot:
+            cheapest_cost = float("inf")
+            cheapest_asset = None
+            for model_name, routes in market_snapshot.models.items():
+                for route in routes:
+                    if route.input_per_1m < cheapest_cost:
+                        cheapest_cost = route.input_per_1m
+                        cheapest_asset = model_name
+
+            # Update asset profiles with market prices
+            if cheapest_asset:
+                profile = self.profiles.get(cheapest_asset)
+                if profile.total_invocations == 0:
+                    # New asset from market — initialize with market price
+                    profile.avg_cost_per_invocation = cheapest_cost / 1000  # per 1k tokens
+
+        # Fall back to standard allocation
+        return self.allocate(task_family, task_value, available_assets)

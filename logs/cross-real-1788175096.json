@@ -1,0 +1,113 @@
+{
+  "run_id": "cross-real-1788175096",
+  "experiment": "crossover-real-letta",
+  "results": [
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-01",
+      "success": true,
+      "tokens": 27,
+      "ms": 5203
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-02",
+      "success": true,
+      "tokens": 28,
+      "ms": 2583
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-03",
+      "success": true,
+      "tokens": 39,
+      "ms": 2416
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-04",
+      "success": true,
+      "tokens": 40,
+      "ms": 11110
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-05",
+      "success": true,
+      "tokens": 29,
+      "ms": 11988
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-06",
+      "success": true,
+      "tokens": 29,
+      "ms": 2914
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-07",
+      "success": true,
+      "tokens": 32,
+      "ms": 4084
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-08",
+      "success": false,
+      "tokens": 614,
+      "ms": 8731
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-09",
+      "success": true,
+      "tokens": 25,
+      "ms": 2477
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-10",
+      "success": true,
+      "tokens": 25,
+      "ms": 2423
+    },
+    {
+      "genome": "C-letta-real",
+      "task_id": "fs-01",
+      "success": false,
+      "tokens": 0,
+      "ms": 60076
+    },
+    {
+      "genome": "C-letta-real",
+      "task_id": "fs-02",
+      "success": false,
+      "tokens": 0,
+      "ms": 60059
+    },
+    {
+      "genome": "C-letta-real",
+      "task_id": "fs-03",
+      "success": false,
+      "tokens": 0,
+      "ms": 60061
+    },
+    {
+      "genome": "C-letta-real",
+      "task_id": "fs-04",
+      "success": false,
+      "tokens": 0,
+      "ms": 60053
+    },
+    {
+      "genome": "C-letta-real",
+      "task_id": "fs-05",
+      "success": false,
+      "tokens": 0,
+      "ms": 60058
+    }
+  ],
+  "runtime_class": "SYNTHETIC",
+  "runtime_class_reason": "Using synthetic YGO environment, not real ygo-agent"
+}
