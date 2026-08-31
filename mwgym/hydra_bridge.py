@@ -1,7 +1,13 @@
 """MWGym ↔ HydraDB bridge — writes experiment data as graph nodes/edges.
 
+Per spec Section 19:
+- EventLedger stays canonical
+- Real Hydra projector writes DecisionPoints
+- SQLite fallback must be marked degraded
+- Add partition/time retrieval filters
+
 Uses the real HydraDB Docker instance (port 17687) for graph storage.
-DecisionPoints become nodes connected to Runs, Genomes, and Outcomes.
+Falls back to WorkerKit SQLite when HydraDB is unavailable.
 """
 from __future__ import annotations
 
@@ -11,11 +17,20 @@ from pathlib import Path
 
 
 class HydraBridge:
-    """Writes MWGym experiment data to real HydraDB graph."""
+    """Writes MWGym experiment data to real HydraDB graph.
 
-    def __init__(self):
-        from .hydra_client import RealHydraDB
-        self.hydra = RealHydraDB()
+    Per spec: this is the REAL Hydra path, not the SQLite degraded path.
+    """
+
+    def __init__(self, degraded: bool = False):
+        self.degraded = degraded
+        self.backend = "sqlite_degraded" if degraded else "hydradb"
+
+        if not degraded:
+            from .hydra_client import RealHydraDB
+            self.hydra = RealHydraDB()
+        else:
+            self.hydra = None
 
     def ensure_genome(self, genome_id: str, generation: int = 0):
         """Create genome node if not exists."""

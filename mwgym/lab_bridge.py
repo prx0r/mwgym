@@ -1,8 +1,11 @@
 """LabBridge — writes MWGym experiment results to WorkerKit's LabProjection.
 
-This is the missing connection between MWGym experiments and the shared
-empirical memory. Every experiment run, genome performance, and outcome
-gets written to the same SQLite db that WorkerKit uses for queries.
+Per spec Section 19: SQLite fallback must be marked degraded projection,
+not silently counted as a Hydra run.
+
+Correct write flow:
+  EVENT HAPPENS → WorkerKit EventLedger append → canonical receipt exists
+  → Hydra projector observes event → Hydra graph projection
 
 Usage:
   from mwgym.lab_bridge import LabBridge
@@ -27,7 +30,11 @@ WORKERKIT_DB = "/root/workerkit/data/hydra.db"
 
 
 class LabBridge:
-    """Writes MWGym experiment data to WorkerKit's LabProjection."""
+    """Writes MWGym experiment data to WorkerKit's LabProjection.
+
+    Per spec: this is the SQLite degraded projection, not real HydraDB.
+    Real Hydra writes go through HydraBridge (hydra_bridge.py).
+    """
 
     def __init__(self, db_path: str = WORKERKIT_DB):
         self.lab = LabProjection(db_path=db_path, append_only=False)
