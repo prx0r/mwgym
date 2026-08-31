@@ -12,9 +12,12 @@ from __future__ import annotations
 
 import time
 import json
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from mwgym.core.model_call import ModelCall, RuntimeProfile
 from mwgym.core.budget_ledger import BudgetLedger

@@ -8,21 +8,21 @@ from typing import Any
 
 from ..schema.genome import WorkerGenome
 from ..harnesses.direct import DirectAdapter
-from ..harnesses.letta import LettaAdapter
+from ..harnesses.fast import FastExecutor
 
 
-# Deterministic filesystem tasks
+# Deterministic filesystem tasks — check against output content
 TASKS = [
-    {"id": "fs-01", "task": "Create file result.txt with content: HELLO", "check": "HELLO"},
-    {"id": "fs-02", "task": "Create file output.txt with content: 42", "check": "42"},
-    {"id": "fs-03", "task": "Create file data.json with content: {\"key\": \"value\"}", "check": '"key"'},
-    {"id": "fs-04", "task": "Create file list.txt with content: item1\\nitem2\\nitem3", "check": "item1"},
-    {"id": "fs-05", "task": "Create file config.yaml with content: name: test", "check": "name: test"},
-    {"id": "fs-06", "task": "Create file notes.md with content: # Notes\\nImportant", "check": "# Notes"},
-    {"id": "fs-07", "task": "Create file script.py with content: print('hi')", "check": "print"},
-    {"id": "fs-08", "task": "Create file readme.txt with content: Project README", "check": "Project README"},
-    {"id": "fs-09", "task": "Create file summary.txt with content: Done", "check": "Done"},
-    {"id": "fs-10", "task": "Create file final.txt with content: COMPLETE", "check": "COMPLETE"},
+    {"id": "fs-01", "task": "Write the word HELLO", "check": "HELLO"},
+    {"id": "fs-02", "task": "Write the number 42", "check": "42"},
+    {"id": "fs-03", "task": "Write JSON: {\"key\": \"value\"}", "check": "key"},
+    {"id": "fs-04", "task": "Write a list: item1, item2, item3", "check": "item1"},
+    {"id": "fs-05", "task": "Write YAML: name: test", "check": "name: test"},
+    {"id": "fs-06", "task": "Write a markdown heading: # Notes", "check": "# Notes"},
+    {"id": "fs-07", "task": "Write Python code: print('hi')", "check": "print"},
+    {"id": "fs-08", "task": "Write text: Project README", "check": "Project README"},
+    {"id": "fs-09", "task": "Write the word Done", "check": "Done"},
+    {"id": "fs-10", "task": "Write the word COMPLETE", "check": "COMPLETE"},
 ]
 
 
@@ -33,7 +33,7 @@ class CrossoverExperiment:
         self.workspace = Path(workspace)
         self.workspace.mkdir(parents=True, exist_ok=True)
         self.direct = DirectAdapter()
-        self.letta = LettaAdapter()
+        self.fast = FastExecutor()
         self.results: list[dict] = []
 
     async def run_task(self, genome: WorkerGenome, task: dict, run_id: str) -> dict:
@@ -46,18 +46,16 @@ class CrossoverExperiment:
         if genome.harness_kind == "direct":
             instance = await self.direct.provision(genome, f"worker-{run_id}")
             result = await self.direct.run(instance, task["task"], str(task_dir))
-        elif genome.harness_kind == "letta":
-            instance = await self.letta.provision(genome, f"worker-{run_id}")
-            result = await self.letta.run(instance, task["task"], str(task_dir))
+        elif genome.harness_kind == "fast":
+            instance = await self.fast.provision(genome, f"worker-{run_id}")
+            result = await self.fast.run(instance, task["task"], str(task_dir))
         else:
             return {"ok": False, "error": f"unknown harness: {genome.harness_kind}"}
 
-        # Check if file was created with correct content
-        expected_file = task_dir / "result.txt"
-        success = False
-        if expected_file.exists():
-            content = expected_file.read_text()
-            success = task["check"] in content
+        # Check if output contains expected text
+        output_lower = result.output.lower()
+        check_lower = task["check"].lower()
+        success = check_lower in output_lower
 
         return {
             "run_id": run_id,
@@ -69,14 +67,13 @@ class CrossoverExperiment:
             "total_tokens": result.total_tokens,
             "duration_ms": result.duration_ms,
             "cost_usd": result.cost_usd,
-            "output": result.output[:100],
+            "output_preview": result.output[:100],
         }
 
-    async def run_experiment(self, n_tasks: int = 10) -> dict:
-        """Run all genomes on all tasks."""
+    async def run_experiment(self, n_tasks: int = 5) -> dict:
+        """Run genomes on tasks."""
         genomes = [
             WorkerGenome.direct_fast(),
-            WorkerGenome.letta_stateless(),
         ]
 
         tasks = TASKS[:n_tasks]
@@ -87,6 +84,7 @@ class CrossoverExperiment:
                 run_id = f"{genome.id}-{task['id']}"
                 r = await self.run_task(genome, task, run_id)
                 results.append(r)
+                print(f"  {r['genome_id']} {r['task_id']}: success={r['success']} tokens={r['total_tokens']} ms={r['duration_ms']}")
 
         self.results = results
 

@@ -1,0 +1,286 @@
+{
+  "run_id": "cross-1788166149",
+  "timestamp": "2026-08-31T08:51:48Z",
+  "experiment": "crossover-direct-vs-fast",
+  "tasks": 10,
+  "genomes": [
+    "direct-fast",
+    "fast-bundle"
+  ],
+  "results": [
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-01",
+      "task": "Write the word HELLO",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 36,
+      "ms": 4636,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "HELLO"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-02",
+      "task": "Write the number 42",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 37,
+      "ms": 6467,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "42"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-03",
+      "task": "Write JSON: {\"key\": \"value\"}",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 44,
+      "ms": 2355,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "{\"key\": \"value\"}"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-04",
+      "task": "Write a list: item1, item2, item3",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 49,
+      "ms": 11204,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "item1, item2, item3"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-05",
+      "task": "Write YAML: name: test",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 43,
+      "ms": 2696,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "```yaml\nname: test\n```"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-06",
+      "task": "Write a markdown heading: # Notes",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 38,
+      "ms": 9036,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "# Notes"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-07",
+      "task": "Write Python code: print('hi')",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 45,
+      "ms": 4844,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "```python\nprint('hi')\n```"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-08",
+      "task": "Write text: Project README",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 281,
+      "ms": 11496,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "# Project README\n\n## Overview\n\nThis project is designed to provide a clear, concise, and helpful overview of a software "
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-09",
+      "task": "Write the word Done",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 34,
+      "ms": 9039,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "Done"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-10",
+      "task": "Write the word COMPLETE",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 34,
+      "ms": 6854,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "COMPLETE"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-01",
+      "task": "Write the word HELLO",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 164,
+      "ms": 5555,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/cross-1788166149/fast-bundle-fs-01/hello.txt"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"hello.txt\",\n      \"content\": \"HELLO\"\n    }\n  ],\n  \""
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-02",
+      "task": "Write the number 42",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 152,
+      "ms": 7181,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/cross-1788166149/fast-bundle-fs-02/number.txt"
+      ],
+      "output_preview": "{\n  \"status\": \"complete\",\n  \"writes\": [{\"path\": \"number.txt\", \"content\": \"42\"}],\n  \"notes\": \"Wrote the number 42 to a fi"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-03",
+      "task": "Write JSON: {\"key\": \"value\"}",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 158,
+      "ms": 2811,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/cross-1788166149/fast-bundle-fs-03/output.json"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [{\"path\": \"output.json\", \"content\": \"{\\\"key\\\": \\\"value\\\"}\"}],\n  \"notes\": \""
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-04",
+      "task": "Write a list: item1, item2, item3",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 177,
+      "ms": 5322,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/cross-1788166149/fast-bundle-fs-04/list.txt"
+      ],
+      "output_preview": "{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"list.txt\",\n      \"content\": \"item1\\nitem2\\nitem3\"\n    }\n  ]"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-05",
+      "task": "Write YAML: name: test",
+      "success": false,
+      "model_calls": 0,
+      "tokens": 0,
+      "ms": 20261,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "The read operation timed out"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-06",
+      "task": "Write a markdown heading: # Notes",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 160,
+      "ms": 14234,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/cross-1788166149/fast-bundle-fs-06/notes.md"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"notes.md\",\n      \"content\": \"# Notes\\n\"\n    }\n  ],\n"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-07",
+      "task": "Write Python code: print('hi')",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 156,
+      "ms": 2641,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/cross-1788166149/fast-bundle-fs-07/solution.py"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [{\"path\": \"solution.py\", \"content\": \"print('hi')\"}],\n  \"notes\": \"Created a"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-08",
+      "task": "Write text: Project README",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 885,
+      "ms": 20971,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/cross-1788166149/fast-bundle-fs-08/README.md"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"README.md\",\n      \"content\": \"# Project README\\n\\n#"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-09",
+      "task": "Write the word Done",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 151,
+      "ms": 9355,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/cross-1788166149/fast-bundle-fs-09/done.txt"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [{\"path\": \"done.txt\", \"content\": \"Done\"}],\n  \"notes\": \"Created a file cont"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-10",
+      "task": "Write the word COMPLETE",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 160,
+      "ms": 2755,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/cross-1788166149/fast-bundle-fs-10/output.txt"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"output.txt\",\n      \"content\": \"COMPLETE\"\n    }\n  ],"
+    }
+  ],
+  "summary": {
+    "direct-fast": {
+      "n": 10,
+      "pass_rate": 1.0,
+      "total_tokens": 641,
+      "avg_ms": 6862,
+      "total_artifacts": 0
+    },
+    "fast-bundle": {
+      "n": 10,
+      "pass_rate": 0.9,
+      "total_tokens": 2163,
+      "avg_ms": 9108,
+      "total_artifacts": 9
+    }
+  }
+}

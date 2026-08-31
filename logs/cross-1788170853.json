@@ -1,0 +1,747 @@
+{
+  "run_id": "cross-1788170853",
+  "timestamp": "2026-08-31T10:10:28Z",
+  "experiment": "crossover-v2-direct-fast-router",
+  "tasks": 10,
+  "genomes": [
+    "direct-fast",
+    "fast-bundle",
+    "C-letta-stateless",
+    "D-router"
+  ],
+  "results": [
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-01",
+      "task": "Write the word HELLO",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 36,
+      "ms": 1971,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "HELLO"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-02",
+      "task": "Write the number 42",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 37,
+      "ms": 2040,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "42"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-03",
+      "task": "Write JSON: {\"key\": \"value\"}",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 44,
+      "ms": 3543,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "{\"key\": \"value\"}"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-04",
+      "task": "Write a list: item1, item2, item3",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 49,
+      "ms": 7167,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "item1, item2, item3"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-05",
+      "task": "Write YAML: name: test",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 43,
+      "ms": 2435,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "```yaml\nname: test\n```"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-06",
+      "task": "Write a markdown heading: # Notes",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 38,
+      "ms": 5217,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "# Notes"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-07",
+      "task": "Write Python code: print('hi')",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 41,
+      "ms": 1677,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "print('hi')"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-08",
+      "task": "Write text: Project README",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 250,
+      "ms": 9298,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "# Project README\n\n## Project Name\n\n[Your Project Name]\n\n## Description\n\nA brief description of what this project does an"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-09",
+      "task": "Write the word Done",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 34,
+      "ms": 2232,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "Done"
+    },
+    {
+      "genome": "direct-fast",
+      "task_id": "fs-10",
+      "task": "Write the word COMPLETE",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 34,
+      "ms": 1807,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "COMPLETE"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-01",
+      "task": "Write the word HELLO",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 154,
+      "ms": 5371,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/fast-bundle-fs-01/hello.txt"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [{\"path\": \"hello.txt\", \"content\": \"HELLO\"}],\n  \"notes\": \"Wrote the word 'H"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-02",
+      "task": "Write the number 42",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 154,
+      "ms": 4061,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/fast-bundle-fs-02/number.txt"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [{\"path\": \"number.txt\", \"content\": \"42\"}],\n  \"notes\": \"Wrote the number 42"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-03",
+      "task": "Write JSON: {\"key\": \"value\"}",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 161,
+      "ms": 2780,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/fast-bundle-fs-03/data.json"
+      ],
+      "output_preview": "{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"data.json\",\n      \"content\": \"{\\\"key\\\": \\\"value\\\"}\"\n    }\n "
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-04",
+      "task": "Write a list: item1, item2, item3",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 162,
+      "ms": 12186,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/fast-bundle-fs-04/list.txt"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [{\"path\": \"list.txt\", \"content\": \"item1, item2, item3\"}],\n  \"notes\": \"Wrot"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-05",
+      "task": "Write YAML: name: test",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 148,
+      "ms": 4270,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/fast-bundle-fs-05/test.yaml"
+      ],
+      "output_preview": "{\n  \"status\": \"complete\",\n  \"writes\": [{\"path\": \"test.yaml\", \"content\": \"name: test\\n\"}],\n  \"notes\": \"Created test.yaml "
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-06",
+      "task": "Write a markdown heading: # Notes",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 159,
+      "ms": 3599,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/fast-bundle-fs-06/notes.md"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"notes.md\",\n      \"content\": \"# Notes\\n\"\n    }\n  ],\n"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-07",
+      "task": "Write Python code: print('hi')",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 164,
+      "ms": 7094,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/fast-bundle-fs-07/main.py"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"main.py\",\n      \"content\": \"print('hi')\"\n    }\n  ],"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-08",
+      "task": "Write text: Project README",
+      "success": false,
+      "model_calls": 1,
+      "tokens": 518,
+      "ms": 8248,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/fast-bundle-fs-08/README.md"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"README.md\",\n      \"content\": \"# Project Name\\n\\nA b"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-09",
+      "task": "Write the word Done",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 149,
+      "ms": 2125,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/fast-bundle-fs-09/output.txt"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [{\"path\": \"output.txt\", \"content\": \"Done\"}],\n  \"notes\": \"Wrote the word 'D"
+    },
+    {
+      "genome": "fast-bundle",
+      "task_id": "fs-10",
+      "task": "Write the word COMPLETE",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 151,
+      "ms": 3812,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/fast-bundle-fs-10/complete.txt"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [{\"path\": \"complete.txt\", \"content\": \"COMPLETE\"}],\n  \"notes\": \"Wrote the w"
+    },
+    {
+      "genome": "C-letta-stateless",
+      "task_id": "fs-01",
+      "task": "Write the word HELLO",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 125,
+      "ms": 3886,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/letta-stateless-fs-01/hello.txt"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"hello.txt\",\n      \"content\": \"HELLO\"\n    }\n  ],\n  \""
+    },
+    {
+      "genome": "C-letta-stateless",
+      "task_id": "fs-02",
+      "task": "Write the number 42",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 127,
+      "ms": 4095,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/letta-stateless-fs-02/42.txt"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"42.txt\",\n      \"content\": \"42\"\n    }\n  ],\n  \"notes\""
+    },
+    {
+      "genome": "C-letta-stateless",
+      "task_id": "fs-03",
+      "task": "Write JSON: {\"key\": \"value\"}",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 139,
+      "ms": 3607,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/letta-stateless-fs-03/output.json"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"output.json\",\n      \"content\": \"{\\\"key\\\": \\\"value\\\""
+    },
+    {
+      "genome": "C-letta-stateless",
+      "task_id": "fs-04",
+      "task": "Write a list: item1, item2, item3",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 140,
+      "ms": 3371,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/letta-stateless-fs-04/list.txt"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"list.txt\",\n      \"content\": \"item1\\nitem2\\nitem3\"\n "
+    },
+    {
+      "genome": "C-letta-stateless",
+      "task_id": "fs-05",
+      "task": "Write YAML: name: test",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 131,
+      "ms": 2620,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/letta-stateless-fs-05/test.yaml"
+      ],
+      "output_preview": "{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"test.yaml\",\n      \"content\": \"name: test\\n\"\n    }\n  ],\n  \"n"
+    },
+    {
+      "genome": "C-letta-stateless",
+      "task_id": "fs-06",
+      "task": "Write a markdown heading: # Notes",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 124,
+      "ms": 5832,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/letta-stateless-fs-06/notes.md"
+      ],
+      "output_preview": "{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"notes.md\",\n      \"content\": \"# Notes\\n\"\n    }\n  ],\n  \"notes"
+    },
+    {
+      "genome": "C-letta-stateless",
+      "task_id": "fs-07",
+      "task": "Write Python code: print('hi')",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 132,
+      "ms": 3522,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/letta-stateless-fs-07/main.py"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"main.py\",\n      \"content\": \"print('hi')\"\n    }\n  ],"
+    },
+    {
+      "genome": "C-letta-stateless",
+      "task_id": "fs-08",
+      "task": "Write text: Project README",
+      "success": false,
+      "model_calls": 1,
+      "tokens": 268,
+      "ms": 7452,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/letta-stateless-fs-08/README.md"
+      ],
+      "output_preview": "{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"README.md\",\n      \"content\": \"# Project Name\\n\\n## Descript"
+    },
+    {
+      "genome": "C-letta-stateless",
+      "task_id": "fs-09",
+      "task": "Write the word Done",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 110,
+      "ms": 2950,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [],\n  \"notes\": \"No file writes needed. The word 'Done' has been successful"
+    },
+    {
+      "genome": "C-letta-stateless",
+      "task_id": "fs-10",
+      "task": "Write the word COMPLETE",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 101,
+      "ms": 2637,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [],\n  \"notes\": \"The word COMPLETE has been written as requested.\"\n}\n```"
+    },
+    {
+      "genome": "D-router",
+      "task_id": "fs-01",
+      "task": "Write the word HELLO",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 36,
+      "ms": 2722,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "HELLO",
+      "routed_to": "direct-fast",
+      "route_reason": "matched simple pattern"
+    },
+    {
+      "genome": "D-router",
+      "task_id": "fs-02",
+      "task": "Write the number 42",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 37,
+      "ms": 3163,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "42",
+      "routed_to": "direct-fast",
+      "route_reason": "matched simple pattern"
+    },
+    {
+      "genome": "D-router",
+      "task_id": "fs-03",
+      "task": "Write JSON: {\"key\": \"value\"}",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 159,
+      "ms": 10073,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/router-fs-03/data.json"
+      ],
+      "output_preview": "{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"data.json\",\n      \"content\": \"{\\\"key\\\": \\\"value\\\"}\"\n    }\n ",
+      "routed_to": "fast-bundle",
+      "route_reason": "matched complex pattern"
+    },
+    {
+      "genome": "D-router",
+      "task_id": "fs-04",
+      "task": "Write a list: item1, item2, item3",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 166,
+      "ms": 2546,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/router-fs-04/list.txt"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [{\"path\": \"list.txt\", \"content\": \"item1, item2, item3\"}],\n  \"notes\": \"Crea",
+      "routed_to": "fast-bundle",
+      "route_reason": "matched complex pattern"
+    },
+    {
+      "genome": "D-router",
+      "task_id": "fs-05",
+      "task": "Write YAML: name: test",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 165,
+      "ms": 2613,
+      "cost": 0.0,
+      "artifacts": [
+        "/tmp/mwgym-exp/crossover-v2/router-fs-05/test.yaml"
+      ],
+      "output_preview": "```json\n{\n  \"status\": \"complete\",\n  \"writes\": [\n    {\n      \"path\": \"test.yaml\",\n      \"content\": \"name: test\\n\"\n    }\n ",
+      "routed_to": "fast-bundle",
+      "route_reason": "matched complex pattern"
+    },
+    {
+      "genome": "D-router",
+      "task_id": "fs-06",
+      "task": "Write a markdown heading: # Notes",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 38,
+      "ms": 4627,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "# Notes",
+      "routed_to": "direct-fast",
+      "route_reason": "matched simple pattern"
+    },
+    {
+      "genome": "D-router",
+      "task_id": "fs-07",
+      "task": "Write Python code: print('hi')",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 41,
+      "ms": 4950,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "print('hi')",
+      "routed_to": "direct-fast",
+      "route_reason": "matched simple pattern"
+    },
+    {
+      "genome": "D-router",
+      "task_id": "fs-08",
+      "task": "Write text: Project README",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 371,
+      "ms": 7717,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "# Project README\n\n## Overview\n\nWelcome to the project repository. This document provides essential information about the",
+      "routed_to": "direct-fast",
+      "route_reason": "matched simple pattern"
+    },
+    {
+      "genome": "D-router",
+      "task_id": "fs-09",
+      "task": "Write the word Done",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 34,
+      "ms": 3683,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "Done",
+      "routed_to": "direct-fast",
+      "route_reason": "matched simple pattern"
+    },
+    {
+      "genome": "D-router",
+      "task_id": "fs-10",
+      "task": "Write the word COMPLETE",
+      "success": true,
+      "model_calls": 1,
+      "tokens": 34,
+      "ms": 2648,
+      "cost": 0.0,
+      "artifacts": [],
+      "output_preview": "COMPLETE",
+      "routed_to": "direct-fast",
+      "route_reason": "matched simple pattern"
+    }
+  ],
+  "summary": {
+    "direct-fast": {
+      "n": 10,
+      "pass_rate": 1.0,
+      "total_tokens": 606,
+      "avg_tokens": 61,
+      "avg_ms": 3739,
+      "total_artifacts": 0
+    },
+    "fast-bundle": {
+      "n": 10,
+      "pass_rate": 0.9,
+      "total_tokens": 1920,
+      "avg_tokens": 192,
+      "avg_ms": 5355,
+      "total_artifacts": 10
+    },
+    "C-letta-stateless": {
+      "n": 10,
+      "pass_rate": 0.9,
+      "total_tokens": 1397,
+      "avg_tokens": 140,
+      "avg_ms": 3997,
+      "total_artifacts": 8
+    },
+    "D-router": {
+      "n": 10,
+      "pass_rate": 1.0,
+      "total_tokens": 1081,
+      "avg_tokens": 108,
+      "avg_ms": 4474,
+      "total_artifacts": 3
+    }
+  },
+  "budget": {
+    "total_spent_usd": 0.0,
+    "by_category": {
+      "compute": 0.0
+    },
+    "remaining": {
+      "daily": 10.0,
+      "per_run": 2.0
+    },
+    "total_entries": 40
+  },
+  "router_routing": {
+    "direct-fast": 7,
+    "fast-bundle": 3
+  },
+  "router_decisions": [
+    {
+      "run_id": "cross-1788170853",
+      "task": "Write the word HELLO",
+      "routed_to": "direct-fast",
+      "model": "MiMo V2.5",
+      "provider": "opencode-go",
+      "reason": "matched simple pattern",
+      "confidence": 0.8,
+      "success": true,
+      "market_source": "stale",
+      "input_per_1m": null,
+      "promotion": null,
+      "stale_comparison": null
+    },
+    {
+      "run_id": "cross-1788170853",
+      "task": "Write the number 42",
+      "routed_to": "direct-fast",
+      "model": "MiMo V2.5",
+      "provider": "opencode-go",
+      "reason": "matched simple pattern",
+      "confidence": 0.8,
+      "success": true,
+      "market_source": "stale",
+      "input_per_1m": null,
+      "promotion": null,
+      "stale_comparison": null
+    },
+    {
+      "run_id": "cross-1788170853",
+      "task": "Write JSON: {\"key\": \"value\"}",
+      "routed_to": "fast-bundle",
+      "model": "fast-bundle",
+      "provider": "",
+      "reason": "matched complex pattern",
+      "confidence": 0.8,
+      "success": true,
+      "market_source": "stale",
+      "input_per_1m": null,
+      "promotion": null,
+      "stale_comparison": null
+    },
+    {
+      "run_id": "cross-1788170853",
+      "task": "Write a list: item1, item2, item3",
+      "routed_to": "fast-bundle",
+      "model": "fast-bundle",
+      "provider": "",
+      "reason": "matched complex pattern",
+      "confidence": 0.8,
+      "success": true,
+      "market_source": "stale",
+      "input_per_1m": null,
+      "promotion": null,
+      "stale_comparison": null
+    },
+    {
+      "run_id": "cross-1788170853",
+      "task": "Write YAML: name: test",
+      "routed_to": "fast-bundle",
+      "model": "fast-bundle",
+      "provider": "",
+      "reason": "matched complex pattern",
+      "confidence": 0.8,
+      "success": true,
+      "market_source": "stale",
+      "input_per_1m": null,
+      "promotion": null,
+      "stale_comparison": null
+    },
+    {
+      "run_id": "cross-1788170853",
+      "task": "Write a markdown heading: # Notes",
+      "routed_to": "direct-fast",
+      "model": "MiMo V2.5",
+      "provider": "opencode-go",
+      "reason": "matched simple pattern",
+      "confidence": 0.8,
+      "success": true,
+      "market_source": "stale",
+      "input_per_1m": null,
+      "promotion": null,
+      "stale_comparison": null
+    },
+    {
+      "run_id": "cross-1788170853",
+      "task": "Write Python code: print('hi')",
+      "routed_to": "direct-fast",
+      "model": "MiMo V2.5",
+      "provider": "opencode-go",
+      "reason": "matched simple pattern",
+      "confidence": 0.8,
+      "success": true,
+      "market_source": "stale",
+      "input_per_1m": null,
+      "promotion": null,
+      "stale_comparison": null
+    },
+    {
+      "run_id": "cross-1788170853",
+      "task": "Write text: Project README",
+      "routed_to": "direct-fast",
+      "model": "MiMo V2.5",
+      "provider": "opencode-go",
+      "reason": "matched simple pattern",
+      "confidence": 0.8,
+      "success": true,
+      "market_source": "stale",
+      "input_per_1m": null,
+      "promotion": null,
+      "stale_comparison": null
+    },
+    {
+      "run_id": "cross-1788170853",
+      "task": "Write the word Done",
+      "routed_to": "direct-fast",
+      "model": "MiMo V2.5",
+      "provider": "opencode-go",
+      "reason": "matched simple pattern",
+      "confidence": 0.8,
+      "success": true,
+      "market_source": "stale",
+      "input_per_1m": null,
+      "promotion": null,
+      "stale_comparison": null
+    },
+    {
+      "run_id": "cross-1788170853",
+      "task": "Write the word COMPLETE",
+      "routed_to": "direct-fast",
+      "model": "MiMo V2.5",
+      "provider": "opencode-go",
+      "reason": "matched simple pattern",
+      "confidence": 0.8,
+      "success": true,
+      "market_source": "stale",
+      "input_per_1m": null,
+      "promotion": null,
+      "stale_comparison": null
+    }
+  ]
+}
