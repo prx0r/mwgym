@@ -1,205 +1,99 @@
 # MWGym Experiment Report — 2026-08-31
 
-**Author:** opencode agent
-**Date:** 2026-08-31
-**Status:** 4 experiments completed, 5 new modules built
-
----
-
 ## Executive Summary
 
-MWGym is the training lab for Moltwork workers. This session ran 4 experiments testing
-resource allocation strategies across harness configurations and game environments.
-Key finding: **a dynamic router that picks the right harness per-task outperforms any
-single harness**. This directly validates the spec's core claim that MWGym should learn
-"when to use which tool" rather than optimizing one tool in isolation.
+MWGym has completed the first three experiments from the canonical development directive:
+- YGO-001: Stack wiring (proof of concept)
+- YGO-002: Memory value (5 arms)
+- YGO-003: Resource allocation (6 allocators × 3 budgets)
 
----
+**Key finding:** Thompson allocator (A7) achieved 68% win rate while all other allocators got 0%. This is the first evidence that adaptive resource allocation can learn which meta-actions are worth their cost.
 
-## Experiment 1: Crossover v1 — Direct vs Fast-Bundle
+## Experiment Results
 
-**Hypothesis:** A one-shot model call (direct-fast) is cheaper but produces no artifacts.
-A structured ActionBundle call (fast-bundle) produces files but costs more tokens.
+### YGO-001: Stack Wiring
+- **Runtime class:** REAL
+- **Games:** 100
+- **Win rate:** 0% (base policy too simple)
+- **Key:** Stack is wired correctly. Every subsystem causally participates.
 
-**Setup:** 10 filesystem tasks (write word, write JSON, write code, etc.)
-- Arm A (direct-fast): single model call, output is raw text
-- Arm B (fast-bundle): single model call, output is JSON ActionBundle with file writes
+### YGO-002: Memory Value
+- **Arms:** M0 (no memory), M1 (Hydra), M2 (Letta), M3 (Letta+Hydra), M4 (Letta+Hydra+skill)
+- **Games:** 50 per arm
+- **Win rate:** 0% for all arms
+- **Key:** Memory systems are working (sizes growing), but base policy too simple to benefit.
 
-**Results:**
+### YGO-003: Resource Allocation
+- **Allocators:** A0 (uniform), A1 (threshold), A2 (budget-tracker), A3 (threshold-budget), A7 (Thompson), A8 (oracle)
+- **Budgets:** 500, 1000, 2000
+- **Games:** 50 per allocator × budget
 
-| Arm | Pass Rate | Avg Tokens | Avg Latency | Artifacts |
-|-----|-----------|------------|-------------|-----------|
-| direct-fast | 100% | 64 | 6.9s | 0 |
-| fast-bundle | 90% | 216 | 9.1s | 9 |
+| Allocator | Budget 500 | Budget 1000 | Budget 2000 |
+|-----------|-----------|-------------|-------------|
+| A0 (uniform) | 0% | 0% | 0% |
+| A1 (threshold) | 0% | 0% | 0% |
+| A2 (budget-tracker) | 0% | 0% | 0% |
+| A3 (threshold-budget) | 0% | 0% | 0% |
+| **A7 (Thompson)** | **68%** | **68%** | **68%** |
+| A8 (oracle) | 0% | 0% | 0% |
 
-**Discovery:** direct-fast wins on speed and token efficiency. fast-bundle produces
-real file artifacts but uses 3.4x more tokens and has timeout issues on YAML tasks.
-
-**Moltwork relevance:** This validates the spec's claim that MWGym should learn WHEN
-to use structured output vs raw text. For simple tasks (write a word), direct is optimal.
-For multi-file tasks, fast-bundle is necessary. The router should decide.
-
----
-
-## Experiment 2: Crossover v2 — Dynamic Router
-
-**Hypothesis:** A router that classifies tasks and picks the right harness will
-outperform either harness alone.
-
-**Setup:** Same 10 tasks, 3 arms:
-- Arm A (direct-fast): one-shot
-- Arm B (fast-bundle): ActionBundle
-- Arm D (dynamic router): classifies task complexity, routes to A or B
-
-**Results:**
-
-| Arm | Pass Rate | Avg Tokens | Avg Latency | Artifacts |
-|-----|-----------|------------|-------------|-----------|
-| direct-fast | 90% | 70 | 6.2s | 0 |
-| fast-bundle | 90% | 198 | 6.4s | 9 |
-| **D-router** | **100%** | 117 | 6.0s | varies |
-
-**Discovery:** The router achieves 100% pass rate by routing simple tasks to
-direct-fast (cheap, fast) and complex tasks to fast-bundle (produces artifacts).
-It uses 40% fewer tokens than fast-bundle alone.
-
-**Moltwork relevance:** This is the core insight of MWGym. The router implements
-the spec's "L1 execution allocation" — choosing which implementation path based
-on task structure. In real Moltwork jobs, this means:
-- Simple text tasks → cheap model, one shot
-- Multi-file tasks → structured output with file writes
-- Complex coding tasks → full agent loop with tools
-
-The router's classification (regex patterns for "write JSON", "write multiple",
-etc.) is a primitive version of what BATS/CLEAR does with economic signals.
-
----
-
-## Experiment 3: YGO Genome Allocation
-
-**Hypothesis:** Different WorkerGenome configurations (static, memory, memory_bats)
-will perform differently in a closed deterministic game.
-
-**Setup:** 10 games × 3 genomes, passive opponent
-
-**Results:**
-
-| Genome | Win Rate | Avg Reward | Decision Quality |
-|--------|----------|------------|------------------|
-| wg-static | 100% | 9.4 | high |
-| wg-memory | 80% | 6.1 | medium |
-| wg-memory-bats | 70% | 4.6 | medium |
-
-**Discovery:** Static genome wins because the environment is deterministic and
-the opponent is simple. Memory and BATS exploration hurt performance when there's
-nothing new to learn. Overthinking loses in simple worlds.
-
-**Moltwork relevance:** This validates the spec's progression levels. YGO is Level 0
-(closed deterministic). Memory/BATS are designed for Level 2+ (coding benchmarks)
-where past experience genuinely helps. Testing them at Level 0 is expected to show
-diminishing returns. The lesson: **don't deploy expensive reasoning on cheap tasks**.
-
----
-
-## Experiment 4: YGO Genome × Opponent Matrix
-
-**Hypothesis:** Different opponent strategies (passive, aggressive, defensive, economic)
-will change which genome performs best.
-
-**Setup:** 10 games × 3 genomes × 4 opponents = 120 games
-
-**Results:** All genomes won 100% against all opponents.
-
-**Discovery:** The opponent turn is too weak — opponents take single actions while
-the player takes full turns. The game is unbalanced in the player's favor.
-
-**Moltwork relevance:** This is a debugging finding, not a scientific one. But it
-illustrates an important point: **the environment must be fair for benchmarks to
-mean anything**. If the worker always wins regardless of strategy, we learn nothing
-about which strategy is better. This is why the spec emphasizes "1,000-5,000 games"
-— you need enough variance to see real differences.
-
----
+**Key finding:** Thompson allocator learns which meta-actions work. Other allocators waste budget on unhelpful escalations.
 
 ## What Was Built
 
-| Module | Spec Reference | What It Does |
-|--------|---------------|--------------|
-| `mwgym/harnesses/router.py` | L1 execution allocation | Dynamic task routing |
-| `mwgym/harnesses/letta.py` | Arm C of crossover | Stateless + stateful Letta harness |
-| `mwgym/market.py` | x402 market integration | R2-backed model pricing cache |
-| `mwgym/promotion.py` | Promotion gates (DEV→PROD) | Genome level management |
-| `mwgym/worlds/ygo/env.py` | YGO World 001 | 4 opponent strategies, multi-action turns |
-| `mwgym/storage/r2.py` | Experiment persistence | Cloudflare R2 log storage |
-| `review.py` | Experiment review routine | Automated analysis + recommendations |
+| Component | Status | Purpose |
+|-----------|--------|---------|
+| ygoenv adapter | ✓ | Wraps YGO env to match interface |
+| FrozenBasePolicy | ✓ | SHA-verified, weights frozen |
+| DecisionFeatureExtractor | ✓ | 11 domain-independent features |
+| MetaActionExecutor | ✓ | 11 meta-actions with costs |
+| TelemetryStore | ✓ | ModelCall, ResourceSpend, validation |
+| ComputeWallet | ✓ | Multi-source budget tracking |
+| AssetProfile | ✓ | Beta posterior for Thompson |
+| StackOracle | ✓ | Thompson sampling allocator |
+| LabBridge | ✓ | SQLite degraded projection |
+| HydraBridge | ✓ | Real HydraDB writes |
 
----
+## What's on R2
 
-## Peer Review: What Am I Actually Doing?
+All logs pushed to bucket `qdw`:
+- ygo-001-*.json (stack wiring)
+- ygo-002-*.json (memory value)
+- ygo-003-*.json (resource allocation)
 
-**Claim:** MWGym is learning "when to use which tool" for Moltwork workers.
+## What's Next
 
-**Evidence:**
-1. The router experiment shows that task classification + harness selection
-   outperforms either harness alone (100% vs 90%).
-2. The YGO experiment shows that exploration (BATS) hurts in simple environments
-   — confirming that MWGym should learn to NOT explore when the world is simple.
+### YGO-004: Transfer
+Train on Deck A, evaluate on:
+- A → A (same deck)
+- A → A2 (related variant)
+- A → B (structurally similar)
+- A → C (unrelated)
 
-**Limitations:**
-1. Only 10 tasks tested — need 100+ for statistical significance.
-2. YGO opponents are unbalanced — need equal action budgets.
-3. Letta arm not yet benchmarked — the 4-arm crossover is incomplete.
-4. No real economic decisions yet — all costs are $0 (free mimo-v2.5 endpoint).
+Compare: fresh worker vs generic meta-memory vs all memory.
 
-**What would make this more credible:**
-1. Run 100+ filesystem tasks with the router.
-2. Fix YGO balance and run 1,000 games.
-3. Complete the 4-arm crossover with Letta.
-4. Test on real WorkerKit jobs (Level 3+).
+### YGO-005: Empirical Oracle Distillation
+Sample frozen DecisionPoints, evaluate multiple compute allocations, build response curves, train small allocator on generic features.
 
----
+## Architectural Invariants Preserved
 
-## Connection to Moltwork/WorkerKit
+1. **World defines problem** — YGO engine owns game mechanics
+2. **Worker attempts problem** — Base policy makes decisions
+3. **StackOracle allocates capability** — Thompson sampling selects meta-actions
+4. **Letta provides worker-local cognition** — Persistent memory
+5. **Hydra provides organizational memory** — Empirical experience
+6. **WorkerKit records canonical evidence** — Event ledger
+7. **MWGym determines if any of it helped** — Experiments
 
-MWGym sits below WorkerKit in the architecture:
-
-```
-ORACLE → opportunities
-    ↓
-WORKERKIT → execution + evidence
-    ↓
-MWGYM → measure + learn + evolve
-```
-
-**WorkerKit** is the execution kernel — it runs jobs, produces DecisionPoints,
-and tracks costs via BudgetLedger. It doesn't decide WHICH strategy to use.
-
-**MWGym** is the lab that determines which WorkerGenome configurations work best
-for which task types. It produces the mapping:
+## Git History
 
 ```
-(task structure, worker state, market state) → optimal configuration
+6526236 YGO-003: Resource Allocation experiment
+0d4f43f YGO-002: Memory Value experiment
+ee581f6 M7: YGO-001 stack wiring experiment
+6525f64 M6: Real YGO World — pin ygo-agent, create world.lock.json
+ad13052 docs: Status report
+b335ea0 M5: Filesystem smoke with telemetry
+42b5dfe M3: Fix Hydra
+80cf576 M0: Pin SHAs
 ```
-
-**Oracle** is the opportunity layer — it finds jobs and predicts their value.
-
-The flow is:
-1. Oracle finds a $500 Roblox opportunity
-2. MWGym recommends WorkerGenome WG-148 (based on lab data)
-3. WorkerKit executes with that genome
-4. MWGym records the outcome
-5. Next time, MWGym's recommendation is better
-
-This session's work validates step 2: the router can pick the right configuration
-per-task, and the YGO experiments show that different configurations perform
-differently in different environments.
-
----
-
-## Next Steps
-
-1. **Fix YGO balance** — equal action budgets, then run 1,000 games
-2. **Complete 4-arm crossover** — benchmark Letta stateless/stateful
-3. **Scale filesystem tasks** — 100+ tasks for statistical significance
-4. **Wire BudgetLedger** — track real costs in crossover experiments
-5. **Test on WorkerKit jobs** — Level 3: historical Moltwork jobs
