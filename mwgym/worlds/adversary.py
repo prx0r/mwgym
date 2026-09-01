@@ -82,9 +82,15 @@ STRATEGIES = {
         target_weak_capabilities=("code.debug", "regression.detect"),
         description="Introduce subtler bugs with misleading symptoms",
     ),
+    "execution_hardening": MutationStrategy(
+        name="execution_hardening",
+        target_failure_modes=("execution_failed", "no_artifacts", "model_error"),
+        target_weak_capabilities=("code.write", "reasoning.default"),
+        description="Make task requirements stricter to force correct execution",
+    ),
     "novelty_injection": MutationStrategy(
         name="novelty_injection",
-        target_failure_modes=(),  # always applicable
+        target_failure_modes=(),  # always applicable as fallback
         target_weak_capabilities=(),
         description="Random perturbation to prevent curriculum collapse",
     ),
@@ -197,6 +203,13 @@ class Adversary:
             perturbations["misleading_symptoms"] = True
             perturbations["regression_landmine"] = True
 
+        elif strategy.name == "execution_hardening":
+            # Tighten requirements to force correct execution
+            resources["budget_usd"] = max(0.005, resources.get("budget_usd", 0.1) * 0.8)
+            structure["strict_output"] = True
+            structure["require_all_fields"] = True
+            perturbations["output_validation"] = True
+
         elif strategy.name == "novelty_injection":
             # Random perturbation
             key = self.rng.choice(["stale_sources", "conflicting_sources", "distractors",
@@ -290,3 +303,33 @@ class Adversary:
         """Get the best worlds from the archive for replay."""
         sorted_archive = sorted(self.archive, key=lambda e: e["score"], reverse=True)
         return sorted_archive[:top_k]
+
+    def save_archive(self, hydra) -> int:
+        """Persist archive to Hydra's curriculum_archive table. Returns count saved."""
+        saved = 0
+        for entry in self.archive:
+            hydra.record_curriculum(
+                family_id=self.family_id,
+                niche_key=entry.get("niche", ""),
+                world_genome_id=entry.get("world_id", ""),
+                difficulty=entry.get("difficulty", 5),
+                discriminative_power=entry.get("score", 0.0),
+                worker_success_rate=entry.get("worker_success_rate", 0.5),
+            )
+            saved += 1
+        return saved
+
+    def load_archive(self, hydra) -> int:
+        """Load archive from Hydra. Returns count loaded."""
+        entries = hydra.get_curriculum(family_id=self.family_id)
+        self.archive = []
+        for e in entries:
+            self.archive.append({
+                "world_id": e.get("world_genome_id", ""),
+                "niche": e.get("niche_key", ""),
+                "score": e.get("discriminative_power", 0.0),
+                "difficulty": e.get("difficulty", 5),
+                "worker_success_rate": e.get("worker_success_rate", 0.5),
+                "created_at": e.get("created_at", 0.0),
+            })
+        return len(self.archive)

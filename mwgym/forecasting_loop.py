@@ -16,7 +16,6 @@ from typing import Any, Callable
 
 from mwgym.metaculus import MetaculusClient, ForecastQuestion
 from mwgym.harnesses.forecasting import ForecastingHarness, ForecastResult
-from mwgym.hydra_unified import UnifiedHydra
 
 
 @dataclass
@@ -36,7 +35,7 @@ class ForecastingLoop:
     
     client: MetaculusClient
     harness: ForecastingHarness
-    hydra: UnifiedHydra
+    hydra: object  # TODO: Wire real HydraDB client
     worker_fn: Callable[[dict], Any] = None  # question -> forecast
     worker_genome_id: str = "metaculus-v1"
     

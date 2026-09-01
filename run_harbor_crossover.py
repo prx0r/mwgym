@@ -25,8 +25,6 @@ from mwgym.harbor_tasks import get_tasks, CodingTask
 from mwgym.telemetry_records import TelemetryStore, ModelCallRecord, ResourceSpend
 from mwgym.core.budget_ledger import BudgetLedger
 from mwgym.asset_profile import AssetProfileStore
-from mwgym.stack_oracle import StackOracle
-from mwgym.lab_bridge import LabBridge
 
 
 def run_direct(task: CodingTask, workspace: Path) -> dict:

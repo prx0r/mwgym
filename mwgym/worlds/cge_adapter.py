@@ -405,6 +405,124 @@ class ResearchVerificationWorld(BaseWorld):
             state.terminal = True
 
 
+class ForecastingWorld(BaseWorld):
+    """Forecasting world: hidden truth, observable question, Brier/log scoring."""
+
+    def _generate_truth(self, rng):
+        qtype = self.genome.structure.get("question_type", "binary")
+        if qtype == "binary":
+            return {"resolution": rng.random() < 0.5, "question_type": "binary"}
+        elif qtype == "numeric":
+            center = rng.uniform(10, 1000)
+            return {"resolution": center, "question_type": "numeric"}
+        else:
+            n_options = self.genome.structure.get("n_options", 4)
+            correct = rng.randint(0, n_options - 1)
+            return {"resolution": correct, "question_type": "multiple_choice", "n_options": n_options}
+
+    def _generate_observable(self, rng, hidden):
+        info = self.genome.information
+        cp = info.get("community_prediction", 0.5)
+        return {
+            "question_text": info.get("question_text", "Will X happen by 2026?"),
+            "question_type": hidden["question_type"],
+            "community_prediction": cp,
+            "nr_forecasters": info.get("nr_forecasters", 50),
+            "close_time": info.get("close_time", ""),
+            "description": info.get("description", ""),
+        }
+
+    def _generate_actions(self, state):
+        if state.terminal:
+            return []
+        qtype = state.hidden.get("question_type", "binary")
+        if qtype == "binary":
+            return [
+                {"kind": "SUBMIT_FORECAST", "payload": {"probability": 0.5}, "estimated_cost": 0.0},
+                {"kind": "RESEARCH", "payload": {}, "estimated_cost": 0.001},
+            ]
+        elif qtype == "numeric":
+            return [
+                {"kind": "SUBMIT_FORECAST", "payload": {"cdf_201": [i / 200 for i in range(201)]}, "estimated_cost": 0.0},
+                {"kind": "RESEARCH", "payload": {}, "estimated_cost": 0.001},
+            ]
+        else:
+            n = state.hidden.get("n_options", 4)
+            probs = {f"option_{i}": 1.0 / n for i in range(n)}
+            return [
+                {"kind": "SUBMIT_FORECAST", "payload": {"probabilities": probs}, "estimated_cost": 0.0},
+                {"kind": "RESEARCH", "payload": {}, "estimated_cost": 0.001},
+            ]
+
+    def _process_result(self, state, action, result):
+        if action.kind == "RESEARCH":
+            state.model_calls += 1
+            state.evidence_quality = min(1.0, state.evidence_quality + 0.15)
+        elif action.kind == "SUBMIT_FORECAST":
+            forecast = action.payload
+            qtype = state.hidden.get("question_type", "binary")
+            resolution = state.hidden.get("resolution")
+
+            if qtype == "binary":
+                p = forecast.get("probability", 0.5)
+                p = max(0.01, min(0.99, p))
+                if resolution is True:
+                    score = max(-10.0, __import__("math").log2(p))
+                else:
+                    score = max(-10.0, __import__("math").log2(1.0 - p))
+                state.correctness = max(0.0, (score + 10.0) / 10.0)
+            elif qtype == "numeric":
+                state.correctness = 0.5 + state.evidence_quality * 0.3
+            else:
+                state.correctness = 0.5 + state.evidence_quality * 0.2
+
+            state.terminal = True
+
+    def score(self, state):
+        return MetricVector(metrics=(
+            Metric("quality", state.correctness, "max"),
+            Metric("log_score", state.correctness, "max"),
+            Metric("evidence_quality", state.evidence_quality, "max"),
+            Metric("cash_cost", state.total_cost_usd, "min"),
+            Metric("model_calls", float(state.model_calls), "min"),
+        ))
+
+    def _evaluate_gates(self, state):
+        return [
+            GateResult(
+                gate_id="g0", gate_name="forecast_submitted",
+                passed=state.correctness > 0,
+                expected="non-zero correctness",
+                actual=str(state.correctness),
+            ),
+            GateResult(
+                gate_id="g1", gate_name="calibrated",
+                passed=state.correctness >= 0.4,
+                expected="correctness >= 0.4",
+                actual=str(state.correctness),
+            ),
+        ]
+
+    def _detect_failure_modes(self, state):
+        modes = []
+        if state.correctness < 0.3:
+            modes.append("overconfident_wrong")
+        if state.correctness < 0.1:
+            modes.append("catastrophic_forecast")
+        if state.evidence_quality < 0.2:
+            modes.append("no_research")
+        if state.total_cost_usd > self.genome.resources.get("budget_usd", 1.0) * 0.9:
+            modes.append("budget_exceeded")
+        return modes
+
+    def _score_capabilities(self, state):
+        return [
+            CapabilityScore(capability="evidence.gather", score=state.evidence_quality, n_samples=1, confidence=0.5),
+            CapabilityScore(capability="calibration.apply", score=state.correctness, n_samples=1, confidence=0.5),
+            CapabilityScore(capability="uncertainty.quantify", score=min(1.0, state.correctness + 0.1), n_samples=1, confidence=0.5),
+        ]
+
+
 class ComputeRoutingWorld(BaseWorld):
     """Compute routing world: model selection under budget constraints."""
 
@@ -459,6 +577,9 @@ _WORLD_CLASSES: dict[str, type[BaseWorld]] = {
     "research.verification": ResearchVerificationWorld,
     "research.analysis": ResearchVerificationWorld,
     "compute.routing": ComputeRoutingWorld,
+    "forecasting.binary": ForecastingWorld,
+    "forecasting.numeric": ForecastingWorld,
+    "forecasting.multiple_choice": ForecastingWorld,
 }
 
 

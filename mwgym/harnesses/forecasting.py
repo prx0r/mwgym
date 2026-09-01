@@ -16,6 +16,7 @@ from mwgym.schema.world import FailureVector, GateResult, CapabilityScore
 
 
 METACULUS_API = "https://www.metaculus.com/api2"
+METACULUS_API_V1 = "https://www.metaculus.com/api"
 
 
 @dataclass
@@ -46,7 +47,7 @@ class ForecastingHarness:
             "Authorization": f"Token {self.token}",
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "User-Agent": "MWGymForecaster/1.0",
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
         }
         self.submissions: list[ForecastResult] = []
 
@@ -87,7 +88,7 @@ class ForecastingHarness:
     def submit_binary_forecast(self, question_id: int, probability: float) -> bool:
         """Submit a binary forecast."""
         probability = max(0.01, min(0.99, probability))
-        result = self._post("/questions/forecast/", [{
+        result = self._post(f"{METACULUS_API_V1}/questions/forecast/", [{
             "question": question_id,
             "probability_yes": probability,
         }])
@@ -95,7 +96,7 @@ class ForecastingHarness:
 
     def submit_numeric_forecast(self, question_id: int, cdf: list) -> bool:
         """Submit a numeric CDF forecast (201 points)."""
-        result = self._post("/questions/forecast/", [{
+        result = self._post(f"{METACULUS_API_V1}/questions/forecast/", [{
             "question": question_id,
             "continuous_cdf": cdf,
         }])
@@ -103,7 +104,7 @@ class ForecastingHarness:
 
     def submit_multiple_choice_forecast(self, question_id: int, probabilities: dict) -> bool:
         """Submit a multiple choice forecast."""
-        result = self._post("/questions/forecast/", [{
+        result = self._post(f"{METACULUS_API_V1}/questions/forecast/", [{
             "question": question_id,
             "probability_yes_per_category": probabilities,
         }])

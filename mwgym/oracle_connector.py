@@ -1,16 +1,16 @@
-"""Oracle Connector — fetch real opportunities, normalize to MWGym tasks.
+"""Oracle Connector — fetch opportunities from Oracle, normalize to MWGym tasks.
 
-Sources: bountybook, github bounties, manual entries
-Output: task instruction + metadata for MWGym execution
+The Oracle is the single source of truth for opportunities.
+MWGym fetches from Oracle, not from external APIs directly.
 """
 from __future__ import annotations
 
 import json
 import time
-import urllib.request
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Any
+
+from oracle.sdk import Oracle
 
 
 @dataclass
@@ -27,160 +27,105 @@ class Opportunity:
     currency: str = "USD"
     status: str = "open"
     posted_at: str = ""
+    extra: dict = field(default_factory=dict)
     fetched_at: float = field(default_factory=time.time)
 
     def to_task(self) -> str:
-        """Convert to MWGym task instruction."""
+        """Convert to MWGym task instruction based on category."""
+        if self.category.startswith("forecasting"):
+            return self._forecasting_task()
+        return self._coding_task()
+
+    def _forecasting_task(self) -> str:
+        """Task instruction for forecasting questions."""
+        task = f"Forecast: {self.title}\n\n"
+        task += f"Source: {self.source} ({self.url})\n"
+        task += f"Type: {self.category}\n"
+        if self.extra.get("community_prediction") is not None:
+            task += f"Community prediction: {self.extra['community_prediction']}\n"
+        if self.extra.get("nr_forecasters"):
+            task += f"Other forecasters: {self.extra['nr_forecasters']}\n"
+        if self.extra.get("close_time"):
+            task += f"Close: {self.extra['close_time']}\n"
+        task += f"\nDescription:\n{self.description[:1000]}\n\n"
+        task += "Instructions:\n"
+        task += "1. Research the question thoroughly\n"
+        task += "2. Consider base rates, recent evidence, and counterarguments\n"
+        task += "3. Produce a probability estimate (0.01 to 0.99)\n"
+        task += "4. Write your reasoning to reasoning.md\n"
+        task += "5. Return JSON: {\"status\": \"complete\", \"probability\": 0.XX, \"notes\": \"...\"}\n"
+        return task
+
+    def _coding_task(self) -> str:
+        """Task instruction for coding/bounty tasks."""
         task = f"Task: {self.title}\n\n"
-        task += f"Description: {self.description}\n\n"
+        task += f"Description: {self.description[:1000]}\n\n"
         if self.skills:
             task += f"Required skills: {', '.join(self.skills)}\n\n"
         task += "Requirements:\n"
         task += "- Implement the solution in Python\n"
         task += "- Write code to a .py file\n"
-        task += "- Code must be runnable (no syntax errors)\n"
-        task += "- Include necessary imports\n\n"
-        task += "Return a JSON ActionBundle:\n"
-        task += '{"status": "complete", "writes": [{"path": "solution.py", "content": "..."}], "notes": "..."}'
+        task += "- Code must be runnable (no syntax errors)\n\n"
+        task += "Return JSON: {\"status\": \"complete\", \"writes\": [{\"path\": \"solution.py\", \"content\": \"...\"}], \"notes\": \"...\"}\n"
         return task
 
     def to_dict(self) -> dict:
         return {k: v for k, v in self.__dict__.items()}
 
 
-def _get(url: str, timeout: int = 15) -> Any:
-    try:
-        req = urllib.request.Request(url, headers={
-            "Accept": "application/json",
-            "User-Agent": "MWGym/1.0",
-        })
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return json.loads(resp.read())
-    except Exception as e:
-        print(f"  Fetch error: {e}")
-        return None
-
-
-def fetch_bountybook(limit: int = 20) -> list[Opportunity]:
-    """Fetch from bountybook API."""
-    data = _get(f"https://api.bountybook.ai/jobs?limit={limit}")
-    if not data:
-        return []
+def fetch_from_oracle(oracle_url: str = "http://localhost:8788",
+                       source: str = "", skill: str = "",
+                       min_reward: float = 0, limit: int = 50) -> list[Opportunity]:
+    """Fetch opportunities from the Oracle API."""
+    o = Oracle(oracle_url)
+    data = o.work(src=source, skill=skill, min_reward=min_reward, limit=limit)
 
     opps = []
-    for j in data.get("jobs", []):
-        opps.append(Opportunity(
-            id=f"bountybook:{j.get('id', '')}",
-            title=j.get("title", ""),
-            description=j.get("description", "")[:500],
-            source="bountybook",
-            url=j.get("url", ""),
-            category=j.get("category", "development"),
-            skills=j.get("skills", []),
-            reward_usd=float(j.get("reward", 0) or 0),
-            currency=j.get("currency", "USD"),
-            status=j.get("status", "open"),
-            posted_at=j.get("posted_at", ""),
-        ))
-    return opps
-
-
-def fetch_github_bounties(limit: int = 20) -> list[Opportunity]:
-    """Fetch from GitHub bounty issues."""
-    data = _get(f"https://api.github.com/search/issues?q=label:bounty+is:open+is:issue&per_page={limit}")
-    if not data:
-        return []
-
-    opps = []
-    for item in data.get("items", [])[:limit]:
-        labels = [l.get("name", "") for l in item.get("labels", [])]
-        reward = 0.0
-        for l in labels:
-            if "$" in l:
-                try:
-                    reward = float(l.replace("$", "").replace(",", ""))
-                except: pass
+    for item in data.get("work", []):
+        extra = item.get("extra", {})
+        if isinstance(extra, str):
+            try: extra = json.loads(extra)
+            except: extra = {}
 
         opps.append(Opportunity(
-            id=f"github:{item.get('number', '')}",
+            id=item.get("id", ""),
             title=item.get("title", ""),
-            description=item.get("body", "")[:500] or "",
-            source="github",
-            url=item.get("html_url", ""),
-            category="development",
-            skills=[l for l in labels if l not in ["bounty", "enhancement", "bug"]],
-            reward_usd=reward,
-            currency="USD",
-            status="open",
-            posted_at=item.get("created_at", ""),
+            description=item.get("desc", ""),
+            source=item.get("src", ""),
+            url=item.get("url", ""),
+            category=item.get("cat", ""),
+            skills=item.get("skills", []),
+            reward_usd=float(item.get("reward", 0) or 0),
+            currency=item.get("currency", "USD"),
+            status=item.get("status", "open"),
+            posted_at=item.get("posted", ""),
+            extra=extra,
         ))
     return opps
 
 
-def fetch_local_tasks() -> list[Opportunity]:
-    """Load local submission tasks as opportunities."""
-    tasks_dir = Path("/root/mwgym/datasets/submissions-v1")
-    opps = []
-    if not tasks_dir.exists():
-        return opps
+def fetch_forecasting(limit: int = 20) -> list[Opportunity]:
+    """Fetch Metaculus forecasting opportunities."""
+    return fetch_from_oracle(source="metaculus", limit=limit)
 
-    for task_dir in sorted(tasks_dir.iterdir()):
-        if not task_dir.is_dir():
-            continue
-        instruction_file = task_dir / "instruction.md"
-        if instruction_file.exists():
-            instruction = instruction_file.read_text()
-            title = instruction.split("\n")[0][:80]
-            opps.append(Opportunity(
-                id=f"local:{task_dir.name}",
-                title=title,
-                description=instruction,
-                source="local",
-                category="development",
-                skills=["python"],
-                reward_usd=0.0,
-                status="open",
-            ))
+
+def fetch_coding(limit: int = 20) -> list[Opportunity]:
+    """Fetch coding/bounty opportunities."""
+    opps = []
+    for src in ["github", "bountybook"]:
+        opps.extend(fetch_from_oracle(source=src, limit=limit))
     return opps
 
 
 def fetch_all(limit_per_source: int = 10) -> list[Opportunity]:
-    """Fetch from all sources, deduplicate."""
+    """Fetch from all Oracle sources."""
     all_opps = []
-
-    # Local tasks first (always available)
-    local = fetch_local_tasks()
-    all_opps.extend(local)
-    print(f"  Local: {len(local)} tasks")
-
-    # Bountybook
-    try:
-        bb = fetch_bountybook(limit_per_source)
-        all_opps.extend(bb)
-        print(f"  Bountybook: {len(bb)} opportunities")
-    except: pass
-
-    # GitHub
-    try:
-        gh = fetch_github_bounties(limit_per_source)
-        all_opps.extend(gh)
-        print(f"  GitHub: {len(gh)} bounties")
-    except: pass
-
-    # Deduplicate by title similarity
-    seen = set()
-    unique = []
-    for opp in all_opps:
-        key = opp.title.lower().strip()[:50]
-        if key not in seen:
-            seen.add(key)
-            unique.append(opp)
-
-    return unique
+    all_opps.extend(fetch_from_oracle(limit=limit_per_source))
+    return all_opps
 
 
 def save_opportunities(opps: list[Opportunity], path: str = "/root/mwgym/data/opportunities.json"):
-    """Save fetched opportunities."""
+    from pathlib import Path
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     data = [o.to_dict() for o in opps]
     Path(path).write_text(json.dumps(data, indent=2, default=str))
@@ -188,7 +133,7 @@ def save_opportunities(opps: list[Opportunity], path: str = "/root/mwgym/data/op
 
 
 def load_opportunities(path: str = "/root/mwgym/data/opportunities.json") -> list[Opportunity]:
-    """Load saved opportunities."""
+    from pathlib import Path
     p = Path(path)
     if not p.exists():
         return []

@@ -31,7 +31,6 @@ from mwgym.worlds.cge_adapter import compile_world, ActionResult
 from mwgym.worlds.adversary import Adversary
 from mwgym.worlds.curriculum import Curriculum, CurriculumConfig
 from mwgym.worlds.schema import get_family
-from mwgym.hydra_unified import UnifiedHydra
 from mwgym.harnesses.pydantic_bats import PydanticBATSHarness, UsageLimits, _call_model, BATSRouter
 from mwgym.workspace import LabWorkspace
 from mwgym.lab_brief import generate_brief
@@ -300,7 +299,7 @@ def run_hybrid_loop(
       8. Report
     """
     profiles = profiles or ["DIRECT", "BOUNDED", "STATEFUL_FAST", "AGENTIC"]
-    hydra = UnifiedHydra()
+    hydra = None  # TODO: Wire real HydraDB client
     lab = LabWorkspace()
     adversary = Adversary(family_id=family_id)
     curriculum = Curriculum(adversary, CurriculumConfig(batch_size=3))

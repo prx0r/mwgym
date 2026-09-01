@@ -16,7 +16,6 @@ from mwgym.schema.world import WorldGenome, FailureVector
 from mwgym.worlds.cge_adapter import compile_world, ActionResult
 from mwgym.worlds.adversary import Adversary
 from mwgym.worlds.curriculum import Curriculum, CurriculumConfig
-from mwgym.hydra_unified import UnifiedHydra
 from mwgym.harnesses.pydantic_bats import PydanticBATSHarness, UsageLimits
 
 
@@ -33,7 +32,7 @@ def run_loop(n_rounds: int = 3, family_id: str = "compute.routing",
       6. FailureVector feeds adversary
       7. Adversary mutates world
     """
-    hydra = UnifiedHydra()
+    hydra = None  # TODO: Wire real HydraDB client
     harness = PydanticBATSHarness()
 
     # Seed world

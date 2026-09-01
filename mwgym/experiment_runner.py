@@ -14,7 +14,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path("/root/mwgym")))
 sys.path.insert(0, str(Path("/root/workerkit")))
 
-from mwgym.hydra_unified import UnifiedHydra
 from mwgym.workspace import LabWorkspace
 from mwgym.schema.world import WorldGenome, FailureVector, GateResult
 from mwgym.worlds.cge_adapter import compile_world
@@ -281,7 +280,7 @@ def exp_04_research_tasks(hydra, lab, exp_id):
 # ─── Main ─────────────────────────────────────────────────────────────
 
 def run_all():
-    hydra = UnifiedHydra()
+    hydra = None  # TODO: Wire real HydraDB client
     lab = LabWorkspace()
     exp_id = f"comprehensive-{int(time.time())}"
     hydra.record_experiment(exp_id, "Comprehensive four-speed testing", family_id="all")

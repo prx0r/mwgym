@@ -23,7 +23,6 @@ from mwgym.worlds.cge_adapter import compile_world, ActionResult
 from mwgym.worlds.adversary import Adversary
 from mwgym.worlds.curriculum import Curriculum, CurriculumConfig
 from mwgym.worlds.schema import get_family
-from mwgym.hydra_unified import UnifiedHydra
 from mwgym.harnesses.pydantic_bats import PydanticBATSHarness, UsageLimits
 from mwgym.workspace import LabWorkspace
 from mwgym.lab_brief import generate_brief
@@ -146,9 +145,14 @@ def run_wired_loop(
 ):
     harness_kinds = harness_kinds or ["pydantic-bats"]
 
-    hydra = UnifiedHydra()
+    hydra = None  # TODO: Wire real HydraDB client
     lab = LabWorkspace()
     adversary = Adversary(family_id=family_id)
+
+    # Load adversary archive from Hydra
+    loaded = adversary.load_archive(hydra)
+    print(f"Loaded {loaded} worlds from curriculum archive")
+
     curriculum = Curriculum(adversary, CurriculumConfig(batch_size=3))
 
     # Record experiment
@@ -243,6 +247,23 @@ def run_wired_loop(
             meta = run_obj.metadata
             model_calls_list = run_obj.model_calls
 
+        # Apply harness result to CGE world state for scoring
+        from mwgym.worlds.cge_adapter import ActionSpec, ActionResult
+        # Map harness result to world-appropriate action
+        if family_id.startswith("compute.routing"):
+            _action = ActionSpec(kind="CALL_CHEAP", payload={"model": meta.get("model", "mimo-v2.5")})
+        elif family_id.startswith("forecasting"):
+            _action = ActionSpec(kind="SUBMIT_FORECAST", payload={"probability": 0.5})
+        else:
+            _action = ActionSpec(kind="ANSWER", payload={"answer": "complete"})
+        _result = ActionResult(
+            action_id=_action.action_id,
+            status="ok" if ok else "error",
+            payload={"output": output[:200]},
+            cash_cost=cost_usd,
+        )
+        state = world.apply(state, _action, _result)
+
         # Step 7: Git commit
         wt.commit_worker_output(f"worker ({harness_kind}): {ok}")
 
@@ -317,6 +338,9 @@ def run_wired_loop(
         adversary.archive_world(child, fv, score)
         hydra.record_world_genome(child)
 
+        # Persist adversary archive to Hydra
+        adversary.save_archive(hydra)
+
         # Update world genome stats (FIX)
         world_runs = hydra.get_runs(world_genome_id=current_world.id)
         if world_runs:
@@ -355,6 +379,64 @@ def run_wired_loop(
         print(f"Capabilities: {[(c.capability, round(c.score, 2)) for c in capabilities]}")
         print(f"Git: {wt.branch} | {wt.base_commit[:8]} → {wt.final_commit[:8] if wt.final_commit else 'none'}")
         print(f"Adversary: strategy={strategy}, child diff={child.difficulty}")
+
+    # Generate insights from experiment results
+    total_runs = len(all_results)
+    success_runs = sum(1 for r in all_results if r["success"])
+    success_rate = success_runs / total_runs if total_runs else 0
+
+    # Capability insights
+    cap_avgs = {}
+    for r in all_results:
+        for cap_name, cap_score in r.get("capabilities", []):
+            if cap_name not in cap_avgs:
+                cap_avgs[cap_name] = []
+            cap_avgs[cap_name].append(cap_score)
+
+    weak_caps = []
+    for cap_name, scores in cap_avgs.items():
+        avg = sum(scores) / len(scores) if scores else 0
+        if avg < 0.5:
+            weak_caps.append(cap_name)
+
+    # Record insights
+    insight_ts = int(time.time())
+    if success_rate < 0.3:
+        hydra.add_insight(
+            insight_id=f"insight-{insight_ts}-failure",
+            title=f"Low success rate: {success_rate:.0%} on {family_id}",
+            body=json.dumps({"success_rate": success_rate, "total_runs": total_runs}),
+            kind="failure_cluster",
+            experiment_id=experiment_id,
+            evidence_runs=total_runs,
+            confidence=min(1.0, total_runs / 20),
+        )
+
+    if weak_caps:
+        hydra.add_insight(
+            insight_id=f"insight-{insight_ts}-weakness",
+            title=f"Weak capabilities on {family_id}: {', '.join(weak_caps[:3])}",
+            body=json.dumps({"weak_caps": weak_caps, "family": family_id}),
+            kind="weakness_detected",
+            experiment_id=experiment_id,
+            evidence_runs=total_runs,
+            confidence=min(1.0, total_runs / 10),
+        )
+
+    # Strategy distribution insight
+    strategy_counts = adversary.mutation_counts
+    if strategy_counts:
+        dominant = max(strategy_counts, key=strategy_counts.get)
+        if strategy_counts[dominant] > total_runs * 0.6:
+            hydra.add_insight(
+                insight_id=f"insight-{insight_ts}-stuck",
+                title=f"Adversary stuck on {dominant}: {strategy_counts[dominant]}/{total_runs} rounds",
+                body=json.dumps(strategy_counts),
+                kind="adversary_stuck",
+                experiment_id=experiment_id,
+                evidence_runs=total_runs,
+                confidence=0.8,
+            )
 
     # Report
     print(f"\n{'='*60}")

@@ -467,8 +467,16 @@ class PydanticBATSHarness:
         return run, fv
 
     def _git_commit(self, workspace: str, message: str) -> str:
-        """Git add + commit in workspace."""
+        """Git add + commit in workspace.
+
+        If workspace is already a managed git repo (e.g. from LabWorkspace),
+        skip — the orchestrator owns B0/B1 commits.
+        """
         import subprocess
+        from pathlib import Path as _P
+        # If .git already exists, this is an externally managed worktree
+        if (_P(workspace) / ".git").exists():
+            return ""
         try:
             subprocess.run(["git", "init"], cwd=workspace,
                           capture_output=True, timeout=5)

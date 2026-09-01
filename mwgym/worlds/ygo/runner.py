@@ -457,15 +457,8 @@ class YGORunner:
         return {"summary": summary, "log": str(log_path)}
 
     def _get_lab_context(self, genome_id: str, opponent: str) -> dict:
-        """Query LabProjection for past performance (Hydra prior)."""
-        try:
-            sys.path.insert(0, str(Path("/root/mwgym")))
-            from mwgym.lab_bridge import LabBridge
-            bridge = LabBridge()
-
-            # Query past win rate for this genome
-            agent_id = f"mwgym-ygo-{genome_id}"
-            win_rate = bridge.win_rate(agent_id)
+        """Query HydraDB for past performance (Hydra prior). TODO: Wire real HydraDB."""
+        return 0.5  # Default win rate until HydraDB is wired
 
             # Query past runs
             runs = bridge.query_runs(agent_id=agent_id, limit=50)
