@@ -225,6 +225,85 @@ CREATE TABLE IF NOT EXISTS graph_edges (
     created_at REAL
 );
 
+-- ─── Metaculus Forecast Tracking ─────────────────────────────────────
+
+-- Forecasts (every submission to Metaculus)
+CREATE TABLE IF NOT EXISTS forecasts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    question_id INTEGER NOT NULL,
+    question_title TEXT,
+    question_type TEXT,          -- binary, numeric, multiple_choice
+    
+    -- Our forecast
+    forecast_value TEXT,         -- JSON: float for binary, list for numeric, dict for MC
+    forecast_submitted INTEGER DEFAULT 0,
+    submission_time REAL,
+    
+    -- Community state at submission
+    community_prediction REAL,
+    nr_forecasters INTEGER DEFAULT 0,
+    
+    -- Question metadata
+    close_time TEXT,
+    resolve_time TEXT,
+    tournament TEXT,
+    
+    -- Worker that made this forecast
+    worker_genome_id TEXT,
+    run_id TEXT,
+    
+    -- Outcome (filled when question resolves)
+    resolved INTEGER DEFAULT 0,
+    resolution_value TEXT,       -- actual outcome
+    our_score REAL,              -- our Brier/log score
+    community_score REAL,        -- community's score
+    beat_community INTEGER,      -- 1 if we beat community
+    
+    -- Provenance
+    created_at REAL,
+    updated_at REAL,
+    metadata TEXT DEFAULT '{}'
+);
+
+-- Forecast sessions (groups of forecasts in one run)
+CREATE TABLE IF NOT EXISTS forecast_sessions (
+    session_id TEXT PRIMARY KEY,
+    worker_genome_id TEXT,
+    run_id TEXT,
+    
+    -- Stats
+    n_questions INTEGER DEFAULT 0,
+    n_submitted INTEGER DEFAULT 0,
+    n_resolved INTEGER DEFAULT 0,
+    n_beat_community INTEGER DEFAULT 0,
+    
+    -- Scores
+    mean_brier REAL,
+    mean_log_score REAL,
+    total_reward_usd REAL DEFAULT 0.0,
+    
+    -- Timing
+    started_at REAL,
+    completed_at REAL,
+    metadata TEXT DEFAULT '{}'
+);
+
+-- Forecast learning (what we learned from each resolution)
+CREATE TABLE IF NOT EXISTS forecast_lessons (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    question_id INTEGER NOT NULL,
+    lesson_type TEXT,            -- calibration, base_rate, update_timing, etc.
+    lesson TEXT,
+    evidence TEXT,               -- JSON with specific data points
+    confidence REAL DEFAULT 0.5,
+    
+    -- Which worker/method this applies to
+    worker_genome_id TEXT,
+    family_id TEXT,
+    
+    created_at REAL
+);
+
 -- Indexes
 CREATE INDEX IF NOT EXISTS idx_runs_world ON runs(world_genome_id);
 CREATE INDEX IF NOT EXISTS idx_runs_worker ON runs(worker_genome_id);
@@ -236,6 +315,10 @@ CREATE INDEX IF NOT EXISTS idx_capability_evidence_family ON capability_evidence
 CREATE INDEX IF NOT EXISTS idx_failure_modes_family ON failure_modes(family_id);
 CREATE INDEX IF NOT EXISTS idx_curriculum_family ON curriculum_archive(family_id);
 CREATE INDEX IF NOT EXISTS idx_curriculum_niche ON curriculum_archive(family_id, niche_key);
+CREATE INDEX IF NOT EXISTS idx_forecasts_question ON forecasts(question_id);
+CREATE INDEX IF NOT EXISTS idx_forecasts_worker ON forecasts(worker_genome_id);
+CREATE INDEX IF NOT EXISTS idx_forecasts_resolved ON forecasts(resolved);
+CREATE INDEX IF NOT EXISTS idx_forecast_sessions_worker ON forecast_sessions(worker_genome_id);
 """
 
 
@@ -687,10 +770,185 @@ class UnifiedHydra:
         worlds = conn.execute("SELECT COUNT(*) as n FROM world_genomes").fetchone()
         workers = conn.execute("SELECT COUNT(*) as n FROM worker_genomes").fetchone()
         experiments = conn.execute("SELECT COUNT(*) as n FROM experiments").fetchone()
+        forecasts = conn.execute("SELECT COUNT(*) as n FROM forecasts").fetchone()
+        resolved = conn.execute("SELECT COUNT(*) as n FROM forecasts WHERE resolved=1").fetchone()
+        beat = conn.execute("SELECT COUNT(*) as n FROM forecasts WHERE beat_community=1").fetchone()
         conn.close()
         return {
             "total_runs": runs["n"] if runs else 0,
             "total_worlds": worlds["n"] if worlds else 0,
             "total_workers": workers["n"] if workers else 0,
             "total_experiments": experiments["n"] if experiments else 0,
+            "total_forecasts": forecasts["n"] if forecasts else 0,
+            "resolved_forecasts": resolved["n"] if resolved else 0,
+            "beat_community": beat["n"] if beat else 0,
         }
+
+    # ─── Metaculus Forecast Tracking ──────────────────────────────────
+
+    def record_forecast(self, question_id: int, question_title: str = "",
+                        question_type: str = "binary", forecast_value: Any = None,
+                        submitted: bool = False, community_prediction: float = None,
+                        nr_forecasters: int = 0, close_time: str = "",
+                        tournament: str = "", worker_genome_id: str = "",
+                        run_id: str = "") -> int:
+        """Record a forecast submission to Metaculus."""
+        conn = self._conn()
+        now = time.time()
+        cursor = conn.execute("""
+            INSERT INTO forecasts
+            (question_id, question_title, question_type, forecast_value,
+             forecast_submitted, submission_time, community_prediction,
+             nr_forecasters, close_time, tournament, worker_genome_id,
+             run_id, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (question_id, question_title, question_type,
+              json.dumps(forecast_value) if forecast_value is not None else None,
+              1 if submitted else 0, now, community_prediction,
+              nr_forecasters, close_time, tournament, worker_genome_id,
+              run_id, now, now))
+        row_id = cursor.lastrowid
+        conn.commit()
+        conn.close()
+        return row_id
+
+    def record_forecast_resolution(self, question_id: int, resolution_value: str,
+                                    our_forecast: float, community_forecast: float) -> dict:
+        """Record when a Metaculus question resolves.
+        
+        Returns score comparison.
+        """
+        conn = self._conn()
+        
+        # Calculate Brier scores (lower is better)
+        try:
+            res = float(resolution_value) if resolution_value in ("Yes", "1", "True") else 0.0
+        except:
+            res = 0.0
+        
+        our_brier = (our_forecast - res) ** 2
+        comm_brier = (community_forecast - res) ** 2
+        beat = our_brier < comm_brier
+        
+        conn.execute("""
+            UPDATE forecasts SET
+                resolved = 1,
+                resolution_value = ?,
+                our_score = ?,
+                community_score = ?,
+                beat_community = ?,
+                updated_at = ?
+            WHERE question_id = ?
+        """, (resolution_value, our_brier, comm_brier, 1 if beat else 0,
+              time.time(), question_id))
+        
+        conn.commit()
+        conn.close()
+        
+        return {
+            "question_id": question_id,
+            "resolution": resolution_value,
+            "our_brier": our_brier,
+            "community_brier": comm_brier,
+            "beat_community": beat,
+        }
+
+    def record_forecast_session(self, session_id: str, worker_genome_id: str = "",
+                                 run_id: str = "", n_questions: int = 0,
+                                 n_submitted: int = 0) -> None:
+        """Record a forecast session (batch of forecasts)."""
+        conn = self._conn()
+        conn.execute("""
+            INSERT INTO forecast_sessions
+            (session_id, worker_genome_id, run_id, n_questions, n_submitted,
+             started_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (session_id, worker_genome_id, run_id, n_questions, n_submitted,
+              time.time()))
+        conn.commit()
+        conn.close()
+
+    def update_forecast_session(self, session_id: str, **kwargs) -> None:
+        """Update a forecast session with results."""
+        conn = self._conn()
+        sets = []
+        params = []
+        for k, v in kwargs.items():
+            if k in ("n_resolved", "n_beat_community", "mean_brier", "mean_log_score",
+                      "total_reward_usd", "completed_at"):
+                sets.append(f"{k} = ?")
+                params.append(v)
+        if sets:
+            params.append(session_id)
+            conn.execute(f"UPDATE forecast_sessions SET {', '.join(sets)} WHERE session_id = ?", params)
+            conn.commit()
+        conn.close()
+
+    def get_unresolved_forecasts(self, limit: int = 100) -> list[dict]:
+        """Get forecasts that haven't resolved yet."""
+        conn = self._conn()
+        rows = conn.execute(
+            "SELECT * FROM forecasts WHERE resolved=0 ORDER BY submission_time DESC LIMIT ?",
+            (limit,)).fetchall()
+        conn.close()
+        return [dict(r) for r in rows]
+
+    def get_forecast_stats(self, worker_genome_id: str = None) -> dict:
+        """Get forecasting performance stats."""
+        conn = self._conn()
+        if worker_genome_id:
+            total = conn.execute("SELECT COUNT(*) as n FROM forecasts WHERE worker_genome_id=?", (worker_genome_id,)).fetchone()
+            resolved = conn.execute("SELECT COUNT(*) as n FROM forecasts WHERE worker_genome_id=? AND resolved=1", (worker_genome_id,)).fetchone()
+            beat = conn.execute("SELECT COUNT(*) as n FROM forecasts WHERE worker_genome_id=? AND beat_community=1", (worker_genome_id,)).fetchone()
+            avg_brier = conn.execute("SELECT AVG(our_score) as avg FROM forecasts WHERE worker_genome_id=? AND resolved=1", (worker_genome_id,)).fetchone()
+        else:
+            total = conn.execute("SELECT COUNT(*) as n FROM forecasts").fetchone()
+            resolved = conn.execute("SELECT COUNT(*) as n FROM forecasts WHERE resolved=1").fetchone()
+            beat = conn.execute("SELECT COUNT(*) as n FROM forecasts WHERE beat_community=1").fetchone()
+            avg_brier = conn.execute("SELECT AVG(our_score) as avg FROM forecasts WHERE resolved=1").fetchone()
+        conn.close()
+        
+        t = total["n"] if total else 0
+        r = resolved["n"] if resolved else 0
+        b = beat["n"] if beat else 0
+        avg = avg_brier["avg"] if avg_brier else None
+        
+        return {
+            "total_forecasts": t,
+            "resolved": r,
+            "pending": t - r,
+            "beat_community": b,
+            "beat_rate": b / max(1, r),
+            "mean_brier": avg,
+            "calibration": "good" if avg and avg < 0.25 else "needs_improvement",
+        }
+
+    def record_forecast_lesson(self, question_id: int, lesson_type: str,
+                                lesson: str, evidence: dict = None,
+                                worker_genome_id: str = "", confidence: float = 0.5) -> None:
+        """Record a lesson learned from a forecast resolution."""
+        conn = self._conn()
+        conn.execute("""
+            INSERT INTO forecast_lessons
+            (question_id, lesson_type, lesson, evidence, confidence,
+             worker_genome_id, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (question_id, lesson_type, lesson,
+              json.dumps(evidence or {}), confidence,
+              worker_genome_id, time.time()))
+        conn.commit()
+        conn.close()
+
+    def get_forecast_lessons(self, lesson_type: str = None, limit: int = 50) -> list[dict]:
+        """Get forecasting lessons for improving future forecasts."""
+        conn = self._conn()
+        if lesson_type:
+            rows = conn.execute(
+                "SELECT * FROM forecast_lessons WHERE lesson_type=? ORDER BY confidence DESC LIMIT ?",
+                (lesson_type, limit)).fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT * FROM forecast_lessons ORDER BY confidence DESC LIMIT ?",
+                (limit,)).fetchall()
+        conn.close()
+        return [dict(r) for r in rows]

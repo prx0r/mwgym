@@ -219,5 +219,48 @@ def _seed_families():
         mutator_families=("economic", "tool_failure", "temporal"),
     ))
 
+    # ─── Metaculus Forecasting ──────────────────────────────────────
+    register_family(FamilyWorldSpec(
+        family_id="forecasting.binary",
+        task_family="forecasting.binary",
+        submission_type="probability_forecast",
+        capabilities=("evidence.gather", "base_rate.establish",
+                       "calibration.apply", "uncertainty.quantify",
+                       "update.incorporate"),
+        gates=("probability_valid", "reasoning_documented",
+               "calibration_better_than_baseline"),
+        generator="forecasting.binary.v1",
+        verifier="forecasting.binary.verifier.v1",
+        mutator_families=("information", "temporal", "source"),
+    ))
+
+    register_family(FamilyWorldSpec(
+        family_id="forecasting.numeric",
+        task_family="forecasting.numeric",
+        submission_type="cdf_forecast",
+        capabilities=("evidence.gather", "distribution.estimate",
+                       "bounds.establish", "calibration.apply",
+                       "update.incorporate"),
+        gates=("cdf_valid", "reasoning_documented",
+               "calibration_better_than_baseline"),
+        generator="forecasting.numeric.v1",
+        verifier="forecasting.numeric.verifier.v1",
+        mutator_families=("information", "temporal", "source"),
+    ))
+
+    register_family(FamilyWorldSpec(
+        family_id="forecasting.multiple_choice",
+        task_family="forecasting.multiple_choice",
+        submission_type="probability_distribution",
+        capabilities=("evidence.gather", "options.enumerate",
+                       "probability.allocate", "calibration.apply",
+                       "update.incorporate"),
+        gates=("probabilities_sum_to_one", "reasoning_documented",
+               "calibration_better_than_baseline"),
+        generator="forecasting.multiple_choice.v1",
+        verifier="forecasting.multiple_choice.verifier.v1",
+        mutator_families=("information", "temporal", "source"),
+    ))
+
 
 _seed_families()
