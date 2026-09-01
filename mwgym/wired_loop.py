@@ -1,11 +1,20 @@
-"""Wired Loop v2 — fixed Git, Letta, capabilities, stats.
+"""Wired Loop v3 — pool-aware learning loop.
 
-Fixes from v1:
-  1. Git: one lab repo + worktrees (not separate repos)
-  2. Letta: persistent researcher-v1 agent, fresh session per run
-  3. Capabilities: harness passes capabilities to FailureVector
-  4. Worker genome + experiment recorded in Hydra
-  5. World genome stats updated after runs
+Following the Private Lab architecture:
+- Pool = shared capability/experience scope
+- Venue = external earning/evaluation surface
+- Finding = evidence with tier system
+- Worker = persistent acting agent
+
+The loop:
+1. Oracle discovers opportunity
+2. Pool matcher selects relevant pools
+3. Context compiler builds lab brief
+4. Worker executes
+5. Evaluation records outcome
+6. Finding recorded with pool association
+7. CGE tests improvement proposals
+8. Git promotes validated skills
 """
 from __future__ import annotations
 
@@ -26,6 +35,53 @@ from mwgym.worlds.schema import get_family
 from mwgym.harnesses.pydantic_bats import PydanticBATSHarness, UsageLimits
 from mwgym.workspace import LabWorkspace
 from mwgym.lab_brief import generate_brief
+
+
+# ─── Pool definitions ─────────────────────────────────────────────────
+
+POOLS = {
+    "forecasting": {
+        "name": "Forecasting Pool",
+        "subdomains": ["binary", "numeric", "multiple_choice"],
+        "capabilities": ["evidence.gather", "calibration.apply", "uncertainty.quantify"],
+        "venues": ["metaculus"],
+    },
+    "compute.routing": {
+        "name": "Compute Routing Pool",
+        "subdomains": ["model.selection", "budget.allocation"],
+        "capabilities": ["model.select", "budget.allocate", "quality.estimate"],
+        "venues": ["local"],
+    },
+    "software.implementation": {
+        "name": "Software Implementation Pool",
+        "subdomains": ["api_endpoint", "web_app", "cli_tool"],
+        "capabilities": ["code.write", "code.understand", "testing"],
+        "venues": ["github", "moltjobs"],
+    },
+}
+
+
+def match_pools(family_id: str) -> list[dict]:
+    """Match pools to a task family."""
+    matches = []
+    for pool_id, pool in POOLS.items():
+        if family_id.startswith(pool_id.split(".")[0]):
+            matches.append({
+                "pool_id": pool_id,
+                "relevance": 0.9,
+                "evidence_strength": 0.5,
+                "transfer_prior": 0.3,
+            })
+    return matches
+
+
+# ─── Finding tiers ────────────────────────────────────────────────────
+
+class FindingTier:
+    OBSERVATION = "OBSERVATION"
+    STUDIO_FINDING = "STUDIO_FINDING"
+    TRANSFER_CLAIM = "TRANSFER_CLAIM"
+    DOCTRINE = "DOCTRINE"
 
 
 # ─── Letta harness (persistent agent, fresh session) ──────────────────
@@ -145,7 +201,8 @@ def run_wired_loop(
 ):
     harness_kinds = harness_kinds or ["pydantic-bats"]
 
-    hydra = None  # TODO: Wire real HydraDB client
+    from mwgym.hydra_unified import UnifiedHydra
+    hydra = UnifiedHydra()
     lab = LabWorkspace()
     adversary = Adversary(family_id=family_id)
 
@@ -320,6 +377,26 @@ def run_wired_loop(
         for mode in fv.failure_modes:
             hydra.record_failure_mode(family_id, mode, fv.failure_severity,
                                        worker_id=f"worker-{harness_kind}")
+
+        # Record pool-aware finding
+        pool_matches = match_pools(family_id)
+        if pool_matches:
+            finding_tier = FindingTier.OBSERVATION
+            if ok and fv.quality_score > 0.8:
+                finding_tier = FindingTier.STUDIO_FINDING
+            
+            for pm in pool_matches:
+                finding_id = f"finding-{run_id}-{pm['pool_id']}"
+                hydra.add_node(finding_id, "Finding", {
+                    "tier": finding_tier,
+                    "pool_id": pm["pool_id"],
+                    "family_id": family_id,
+                    "quality": fv.quality_score,
+                    "confidence": pm["relevance"],
+                    "run_id": run_id,
+                })
+                hydra.add_edge(finding_id, f"pool:{pm['pool_id']}", "APPLIES_TO")
+                hydra.add_edge(finding_id, f"run:{run_id}", "LEARNED_FROM")
 
         # Record graph
         hydra.add_node(f"run:{run_id}", "Run", {

@@ -9,17 +9,24 @@ It's to create worlds at the worker's training frontier:
   - combinations that expose correlated weaknesses
 
 Uses the CGE peer-reviewed feedback machinery adapted for world evolution.
+
+Wired to CG evolution recipes for mutation strategies.
 """
 from __future__ import annotations
 
 import hashlib
 import json
 import random
+import sys
 import time
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
 from ..schema.world import FailureVector, WorldGenome
+
+# Add CG to path for evolution recipes
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "cg"))
 
 
 # ─── Mutation Strategies ──────────────────────────────────────────────
@@ -156,7 +163,18 @@ class Adversary:
         return applicable[-1]
 
     def mutate(self, parent: WorldGenome, fv: FailureVector) -> WorldGenome:
-        """Create a child WorldGenome from parent + failure vector."""
+        """Create a child WorldGenome from parent + failure vector.
+        
+        Uses CG evolution recipes when available, falls back to local mutation.
+        """
+        # Try CG evolution recipes first
+        child = self._try_cg_evolution(parent, fv)
+        if child:
+            self.generation += 1
+            niche = _niche_key(fv, child)
+            return child, "cg_evolution", niche
+        
+        # Fall back to local mutation strategies
         strategy = self.select_strategy(fv)
         self.generation += 1
         self.mutation_counts[strategy.name] = self.mutation_counts.get(strategy.name, 0) + 1
@@ -168,6 +186,53 @@ class Adversary:
         niche = _niche_key(fv, child)
 
         return child, strategy.name, niche
+    
+    def _try_cg_evolution(self, parent: WorldGenome, fv: FailureVector) -> WorldGenome | None:
+        """Try to use CG evolution recipes for mutation.
+        
+        Returns None if CG is not available or fails.
+        """
+        try:
+            from cogym_kernel.evo.recipes import EvolutionContext, propose_children
+            
+            # Create evolution context from current state
+            ctx = EvolutionContext(
+                elite_configs=[parent.to_dict()],
+                scorecard=[{
+                    "config": parent.to_dict(),
+                    "metrics": {
+                        "quality": 1.0 - fv.failure_severity,
+                        "cost": fv.regret_usd,
+                    },
+                }],
+                hydra_leaders=[],
+                search_space={
+                    "difficulty": (1, 10),
+                    "budget_usd": (0.005, 0.1),
+                },
+                rng=self.rng,
+            )
+            
+            # Use CG's mutation recipe
+            children = propose_children("failure_guided", ctx, n_children=1)
+            if children:
+                child_dict = children[0]
+                # Convert back to WorldGenome
+                return WorldGenome(
+                    id=child_dict.get("id", f"cg-{self.generation}"),
+                    parent_id=parent.id,
+                    generation=self.generation,
+                    family_id=parent.family_id,
+                    difficulty=child_dict.get("difficulty", parent.difficulty),
+                    seed=self.rng.randint(0, 2**31),
+                    structure=child_dict.get("structure", parent.structure),
+                    information=child_dict.get("information", parent.information),
+                    resources=child_dict.get("resources", parent.resources),
+                )
+        except Exception:
+            pass
+        
+        return None
 
     def _apply_mutation(self, parent: WorldGenome, strategy: MutationStrategy,
                          fv: FailureVector) -> WorldGenome:

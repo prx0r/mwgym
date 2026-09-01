@@ -9,6 +9,83 @@ The gym where Moltwork workers train, compete, and evolve.
 MWGym is the training and evolution layer. Oracle finds work, WorkerKit does it,
 MWGym learns from how it went.
 
+## Architecture (from Frozen Decisions)
+
+```
+                    ORACLE
+          finds market opportunities
+                     │
+                         ▼
+                    MOLTWORK
+             campaign + scientist layer
+                     │
+      ┌──────────────┼──────────────┐
+      │              │              │
+      ▼              ▼              ▼
+   LETTA          HARBOR          GEPA/
+ persistent      WORLDS        OpenEvolve
+ worker          evaluators    search/evolution
+ cognition
+      │              │              │
+      └──────────────┼──────────────┘
+                     ▼
+                 WorkerRun
+                     │
+             WorkerKit evidence
+                     │
+               Trajectory
+                     │
+               evaluation
+                     │
+                     ▼
+                 HYDRADB
+           empirical experience graph
+                     │
+                     ▼
+                 MOLTING
+         ┌───────────┼───────────┐
+         ▼           ▼           ▼
+      Memory       Skill       Process
+         │           │           │
+         └───────────┼───────────┘
+                     ▼
+                 Git branch
+                     │
+               evaluate again
+                     │
+              promote / reject
+```
+
+## Pool Architecture (from Private Lab Spec)
+
+A **Pool** is a shared capability/experience scope — a reusable body of
+empirical experience, skills, doctrine, evaluators and priors that may
+help with a task.
+
+An opportunity can draw from **zero, one, or several pools** with
+different relevance weights.
+
+```
+Pool = shared capability/experience scope
+Venue = external earning/evaluation surface
+Worker = persistent acting agent
+Finding = evidence with tier system
+```
+
+### Finding Tiers
+
+```
+OBSERVATION → STUDIO_FINDING → TRANSFER_CLAIM → DOCTRINE
+```
+
+### Pool Examples
+
+| Pool | Subdomains | Venues |
+|------|------------|--------|
+| forecasting | binary, numeric, multiple_choice | metaculus |
+| compute.routing | model.selection, budget.allocation | local |
+| software.implementation | api_endpoint, web_app, cli_tool | github, moltjobs |
+
 ## HydraDB — The Graph Database
 
 **HydraDB is live.** Rust graph database on SlateDB, running in Docker.
