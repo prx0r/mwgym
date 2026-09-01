@@ -105,8 +105,8 @@ class BATSRouter:
             "provider": "opencode-go",
             "api_url": "https://opencode.ai/zen/go/v1/chat/completions",
             "quality": 0.7,
-            "cost_per_1k_in": 0.00014,
-            "cost_per_1k_out": 0.00028,
+            "cost_per_1k_in": 0.00014,  # LiveLLM: $0.14/M
+            "cost_per_1k_out": 0.00028,  # LiveLLM: $0.28/M
             "free": False,
         },
         "llama-3.3-70b-versatile": {
@@ -153,10 +153,16 @@ class BATSRouter:
     def select(self, task_type: str, budget_remaining: float,
                uncertainty: float = 0.5,
                capability_scores: dict[str, float] | None = None) -> ModelRoute:
-        """Select model based on task, budget, and uncertainty."""
-        # Tight budget → free
+        """Select model based on task, budget, and uncertainty.
+        
+        LiveLLM pricing (from /v1/market):
+        - mimo-v2.5: $0.14/M input, $0.28/M output
+        - llama-3.3-70b: $0.59/M input, $0.79/M output
+        - llama-3.1-8b: $0.05/M input, $0.08/M output
+        """
+        # Tight budget → cheapest capable model
         if budget_remaining < 0.001:
-            return self._route("mimo-v2.5", "budget_tight_free")
+            return self._route("llama-3.1-8b-instant", "budget_tight_cheapest")
 
         # High uncertainty + budget → stronger model
         if uncertainty > 0.7 and budget_remaining > 0.01:
@@ -176,18 +182,21 @@ class BATSRouter:
             if free_score > 0.8:
                 return self._route("mimo-v2.5", f"hydra_free_good_enough={free_score:.2f}")
 
-        # Default: free
-        return self._route("mimo-v2.5", "default_free")
+        # Default: mimo-v2.5 (cheapest paid)
+        return self._route("mimo-v2.5", "default_cheapest_paid")
 
     def _route(self, model_name: str, reason: str) -> ModelRoute:
         m = self.MODELS[model_name]
         key = self._keys.get(m["provider"], "")
+        # Estimate cost per call (assuming ~1000 input + ~500 output tokens)
+        estimated_cost = (m["cost_per_1k_in"] * 1.0 + m["cost_per_1k_out"] * 0.5)
         return ModelRoute(
             model=model_name,
             provider=m["provider"],
             api_url=m["api_url"],
             api_key=key,
             reason=reason,
+            estimated_cost_per_call=estimated_cost,
             quality_estimate=m["quality"],
         )
 
