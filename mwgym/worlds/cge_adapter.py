@@ -568,6 +568,43 @@ class ComputeRoutingWorld(BaseWorld):
         elif action.kind == "SUBMIT":
             state.terminal = True
 
+    def _score_capabilities(self, state: WorldState) -> list[CapabilityScore]:
+        """Per-capability scoring based on what the worker actually did."""
+        caps = self.genome.structure.get("capabilities", [])
+        if not caps:
+            caps = ["model.select", "budget.allocate", "quality.estimate"]
+        
+        # Model selection: did worker pick the right model for difficulty?
+        difficulty = state.hidden.get("task_difficulty", 0.5)
+        optimal = "strong" if difficulty > 0.7 else "cheap" if difficulty > 0.3 else "free"
+        model_score = 1.0 if state.correctness > 0.7 else 0.5 if state.correctness > 0.4 else 0.0
+        
+        # Budget allocation: did worker stay within budget?
+        budget = self.genome.resources.get("budget_usd", 0.10)
+        budget_score = 1.0 if state.total_cost_usd <= budget else 0.0
+        
+        # Quality estimate: did worker produce good output?
+        quality_score = state.correctness
+        
+        # Latency: how fast was the worker?
+        latency_score = 1.0 if state.step <= 2 else 0.7 if state.step <= 4 else 0.3
+        
+        # Escalation: did worker escalate appropriately?
+        escalation_score = 1.0 if state.model_calls <= 2 else 0.5
+        
+        scores = {
+            "model.select": model_score,
+            "budget.allocate": budget_score,
+            "quality.estimate": quality_score,
+            "latency.predict": latency_score,
+            "escalation.decide": escalation_score,
+        }
+        
+        return [
+            CapabilityScore(capability=c, score=scores.get(c, 0.5), n_samples=1, confidence=0.5)
+            for c in caps
+        ]
+
 
 # ─── Registry ─────────────────────────────────────────────────────────
 
