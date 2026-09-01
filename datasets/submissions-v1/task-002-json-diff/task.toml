@@ -1,0 +1,13 @@
+schema_version = "1.4"
+artifacts = []
+
+[task]
+name = "mwgym/task-002-json-diff"
+version = "1.0.0"
+description = "JSON deep diff utility"
+
+[metadata]
+family = "software.implementation"
+
+[verifier]
+timeout_sec = 600.0

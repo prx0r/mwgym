@@ -1,0 +1,13 @@
+schema_version = "1.4"
+artifacts = []
+
+[task]
+name = "mwgym/task-001-rate-limiter"
+version = "1.0.0"
+description = "Build API rate limiter"
+
+[metadata]
+family = "software.implementation"
+
+[verifier]
+timeout_sec = 600.0

@@ -1,0 +1,13 @@
+schema_version = "1.4"
+artifacts = []
+
+[task]
+name = "mwgym/task-005-config-merge"
+version = "1.0.0"
+description = "Deep config merge utility"
+
+[metadata]
+family = "software.implementation"
+
+[verifier]
+timeout_sec = 600.0

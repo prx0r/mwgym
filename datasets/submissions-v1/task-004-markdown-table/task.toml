@@ -1,0 +1,13 @@
+schema_version = "1.4"
+artifacts = []
+
+[task]
+name = "mwgym/task-004-markdown-table"
+version = "1.0.0"
+description = "Markdown table parser"
+
+[metadata]
+family = "software.implementation"
+
+[verifier]
+timeout_sec = 600.0
