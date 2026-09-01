@@ -105,9 +105,9 @@ class BATSRouter:
             "provider": "opencode-go",
             "api_url": "https://opencode.ai/zen/go/v1/chat/completions",
             "quality": 0.7,
-            "cost_per_1k_in": 0.0,
-            "cost_per_1k_out": 0.0,
-            "free": True,
+            "cost_per_1k_in": 0.00014,
+            "cost_per_1k_out": 0.00028,
+            "free": False,
         },
         "llama-3.3-70b-versatile": {
             "provider": "groq",
@@ -124,6 +124,14 @@ class BATSRouter:
             "cost_per_1k_in": 0.00005,
             "cost_per_1k_out": 0.00008,
             "free": False,
+        },
+        "Meta Llama 3.1 8B (free)": {
+            "provider": "openrouter",
+            "api_url": "https://openrouter.ai/api/v1/chat/completions",
+            "quality": 0.65,
+            "cost_per_1k_in": 0.0,
+            "cost_per_1k_out": 0.0,
+            "free": True,
         },
     }
 
